@@ -101,6 +101,9 @@ public class InstanceInstaller implements ContextExecutorTask {
             InstanceInstaller.postInstallCheck(context.getAssets());
         }catch (Exception e) {
             Tools.showError(context, e);
+            if (sLastInstallInfo.isFile()) {
+                boolean ignored = sLastInstallInfo.delete();
+            }
         }
     }
 
