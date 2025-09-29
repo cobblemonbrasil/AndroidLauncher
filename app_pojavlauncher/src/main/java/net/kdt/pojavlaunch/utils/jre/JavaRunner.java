@@ -149,12 +149,25 @@ public class JavaRunner {
         else return new File(runtimeHomeDir, "lib/"+flavor+"/libjvm.so");
     }
 
+    private static File findVmForArch(File runtimeHomeDir, String arch) {
+        File finalPath;
+        if((finalPath = getVmPath(runtimeHomeDir, arch, "server")).exists()) return finalPath;
+        if((finalPath = getVmPath(runtimeHomeDir, arch, "client")).exists()) return finalPath;
+        return null;
+    }
+
     private static File findVmPath(File runtimeHomeDir, String runtimeArch) {
         File finalPath;
-        if((finalPath = getVmPath(runtimeHomeDir, null, "server")).exists()) return finalPath;
-        if((finalPath = getVmPath(runtimeHomeDir, null, "client")).exists()) return finalPath;
-        if((finalPath = getVmPath(runtimeHomeDir, runtimeArch, "server")).exists()) return finalPath;
-        if((finalPath = getVmPath(runtimeHomeDir, runtimeArch, "client")).exists()) return finalPath;
+        if((finalPath = findVmForArch(runtimeHomeDir, null)) != null) return finalPath;
+        switch (runtimeArch) {
+            case "i386": case "i486": case "i586":
+                if((finalPath = findVmForArch(runtimeHomeDir, "i386")) != null) return finalPath;
+                if((finalPath = findVmForArch(runtimeHomeDir, "i486")) != null) return finalPath;
+                if((finalPath = findVmForArch(runtimeHomeDir, "i586")) != null) return finalPath;
+                break;
+            default:
+                if((finalPath = findVmForArch(runtimeHomeDir, runtimeArch)) != null) return finalPath;
+        }
         return null;
     }
 
