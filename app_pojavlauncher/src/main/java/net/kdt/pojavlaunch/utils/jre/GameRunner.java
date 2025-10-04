@@ -185,7 +185,6 @@ public class GameRunner {
         OldVersionsUtils.selectOpenGlVersion(versionInfo);
 
         List<String> launchClassPath = generateLaunchClassPath(versionInfo, versionId);
-        launchClassPath.add(0, getLWJGL3ClassPath());
 
         List<String> javaArgList = new ArrayList<>();
 
@@ -357,26 +356,16 @@ public class GameRunner {
         return Tools.DIR_HOME_VERSION + "/" + version + "/" + version + ".jar";
     }
 
-    private static String getLWJGL3ClassPath() {
-        StringBuilder libStr = new StringBuilder();
-        File lwjgl3Folder = new File(Tools.DIR_GAME_HOME, "lwjgl3");
-        File[] lwjgl3Files = lwjgl3Folder.listFiles();
-        if (lwjgl3Files != null) {
-            for (File file: lwjgl3Files) {
-                if (file.getName().endsWith(".jar")) {
-                    libStr.append(file.getAbsolutePath()).append(":");
-                }
-            }
-        }
-        // Remove the ':' at the end
-        libStr.setLength(libStr.length() - 1);
-        return libStr.toString();
-    }
-
     private static List<String> generateLaunchClassPath(JMinecraftVersionList.Version info, String actualname) {
+        File lwjgl3Folder = new File(Tools.DIR_GAME_HOME, "lwjgl3");
+        File glfwFatJar = new File(lwjgl3Folder, "lwjgl-glfw-classes.jar");
+        File lwjglxJar = new File(lwjgl3Folder, "lwjgl-lwjglx.jar");
+        if(!glfwFatJar.exists() || !lwjglxJar.exists()) throw new RuntimeException("Required LWJGL3 files not found");
+
         String[] libClasspath = generateLibClasspath(info);
-        ArrayList<String> classpath = new ArrayList<>(libClasspath.length + 1);
-        classpath.add(getClientClasspath(actualname));
+        ArrayList<String> classpath = new ArrayList<>(libClasspath.length + 3);
+        // LWJGL3 comes first - must override any custom LWJGL3 on the classpath
+        classpath.add(glfwFatJar.getAbsolutePath());
         for(String s : libClasspath) {
             if(!FileUtils.exists(s)) {
                 Log.d(Tools.APP_NAME, "Ignored non-exists file: " + s);
@@ -384,8 +373,10 @@ public class GameRunner {
             }
             classpath.add(s);
         }
+        classpath.add(getClientClasspath(actualname));
+        // LWJGLX (custom LWJGL2) comes last - mods must be able to override it
+        classpath.add(lwjglxJar.getAbsolutePath());
         classpath.trimToSize();
-
         return classpath;
     }
 
