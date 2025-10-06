@@ -85,9 +85,9 @@ typedef struct {
 void vm_hinter_setup(vm_hinter_t* hinter, bool hasJavaAgents) {
     if(!apiRequiresHints()) return;
     hinter_process(&hinter->awt, "libawt_headless.so");
-    hinter_process(&hinter->instrument, "libnio.so");
+    hinter_process(&hinter->nio, "libnio.so");
     if(hasJavaAgents) {
-        hinter_process(&hinter->nio, "libinstrument.so");
+        hinter_process(&hinter->instrument, "libinstrument.so");
     }
 }
 
