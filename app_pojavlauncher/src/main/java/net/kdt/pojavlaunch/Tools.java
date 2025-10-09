@@ -439,6 +439,11 @@ public final class Tools {
         act.startActivity(browserIntent);
     }
 
+    public static boolean shouldSkipLibrary(DependentLibrary library) {
+        // Don't use lwjgl from libraries, we have our own bundled in.
+        return library.name.startsWith("org.lwjgl");
+    }
+
     public static void preProcessLibraries(DependentLibrary[] libraries) {
         for (DependentLibrary libItem : libraries) {
             String[] version = libItem.name.split(":")[2].split("\\.");

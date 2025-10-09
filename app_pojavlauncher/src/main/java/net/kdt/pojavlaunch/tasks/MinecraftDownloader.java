@@ -251,8 +251,7 @@ public class MinecraftDownloader extends Downloader {
         Tools.preProcessLibraries(dependentLibraries);
         growDownloadList(dependentLibraries.length);
         for(DependentLibrary dependentLibrary : dependentLibraries) {
-            // Don't download lwjgl, we have our own bundled in.
-            if(dependentLibrary.name.startsWith("org.lwjgl")) continue;
+            if(Tools.shouldSkipLibrary(dependentLibrary)) continue;
             // Special handling for JNA Android natives
             if(dependentLibrary.name.startsWith("net.java.dev.jna:jna:")) {
                 scheduleNativeLibraryDownload(MAVEN_CENTRAL_REPO1, dependentLibrary);

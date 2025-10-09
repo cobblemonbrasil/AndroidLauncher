@@ -364,19 +364,14 @@ public class GameRunner {
         File lwjglxJar = new File(lwjgl3Folder, "lwjgl-lwjglx.jar");
         if(!glfwFatJar.exists() || !lwjglxJar.exists()) throw new RuntimeException("Required LWJGL3 files not found");
 
-        String[] libClasspath = generateLibClasspath(info);
-        ArrayList<String> classpath = new ArrayList<>(libClasspath.length + 3);
+        ArrayList<String> classpath = new ArrayList<>(info.libraries.length + 3);
         // LWJGL3 comes first - must override any custom LWJGL3 on the classpath
         classpath.add(glfwFatJar.getAbsolutePath());
-        for(String s : libClasspath) {
-            if(!FileUtils.exists(s)) {
-                Log.d(Tools.APP_NAME, "Ignored non-exists file: " + s);
-                continue;
-            }
-            classpath.add(s);
-        }
+        // Custom version libraries are inbetween
+        generateLibClasspath(info, classpath);
+        // Client is last before LWJGL2 - all libraries must have higher precedence than it.
         classpath.add(getClientClasspath(actualname));
-        // LWJGLX (custom LWJGL2) comes last - mods must be able to override it
+        // LWJGLX (custom LWJGL2) comes last - anything in the client or libs should override it
         classpath.add(lwjglxJar.getAbsolutePath());
         classpath.trimToSize();
         return classpath;
@@ -392,13 +387,13 @@ public class GameRunner {
         return true; // allow if none match
     }
 
-    public static String[] generateLibClasspath(JMinecraftVersionList.Version info) {
-        List<String> libDir = new ArrayList<>();
+    public static void generateLibClasspath(JMinecraftVersionList.Version info, List<String> target) {
         for (DependentLibrary libItem: info.libraries) {
-            if(!checkRules(libItem.rules)) continue;
-            libDir.add(Tools.DIR_HOME_LIBRARY + "/" + Tools.artifactToPath(libItem));
+            if(!checkRules(libItem.rules) || Tools.shouldSkipLibrary(libItem)) continue;
+            File library = new File(Tools.DIR_HOME_LIBRARY, Tools.artifactToPath(libItem));
+            if(!library.exists()) continue;
+            target.add(library.getAbsolutePath());
         }
-        return libDir.toArray(new String[0]);
     }
 
     public static @NonNull String pickRuntime(Instance instance, int targetJavaVersion) {
