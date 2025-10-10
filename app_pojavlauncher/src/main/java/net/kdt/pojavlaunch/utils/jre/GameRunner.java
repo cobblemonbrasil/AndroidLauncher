@@ -387,13 +387,39 @@ public class GameRunner {
         return true; // allow if none match
     }
 
+    /**
+     * "Carve out" the version out of a Maven library name
+     * @param fullMavenName the full library name
+     * @return the library name without the version
+     */
+    private static String trimLibVersion(String fullMavenName) {
+        int first = fullMavenName.indexOf(':');
+        if(first == -1) return fullMavenName;
+        int second = fullMavenName.indexOf(':', first + 1);
+        if(second == -1) return fullMavenName;
+        int third = fullMavenName.indexOf(':', second + 1);
+        if(third != -1) {
+            return fullMavenName.substring(0, second + 1) + fullMavenName.substring(third);
+        } else {
+            return fullMavenName.substring(0, second + 1);
+        }
+    }
+
     public static void generateLibClasspath(JMinecraftVersionList.Version info, List<String> target) {
-        for (DependentLibrary libItem: info.libraries) {
+        ArrayMap<String, String> libraries = new ArrayMap<>();
+        for (DependentLibrary libItem : info.libraries) {
             if(!checkRules(libItem.rules) || Tools.shouldSkipLibrary(libItem)) continue;
             File library = new File(Tools.DIR_HOME_LIBRARY, Tools.artifactToPath(libItem));
             if(!library.exists()) continue;
-            target.add(library.getAbsolutePath());
+            String name = trimLibVersion(libItem.name);
+            // If the lib list has both asm-all and normal asm, something is either terribly wrong
+            // or it's just babric. Let's hope for the latter
+            if(name.equals("org.ow2.asm:asm:")) {
+                libraries.remove("org.ow2.asm:asm-all:");
+            }
+            libraries.put(name, library.getAbsolutePath());
         }
+        target.addAll(libraries.values());
     }
 
     public static @NonNull String pickRuntime(Instance instance, int targetJavaVersion) {
