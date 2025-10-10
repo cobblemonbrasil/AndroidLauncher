@@ -8,6 +8,7 @@
 #include <stdlib.h>
 #include <sys/types.h>
 #include <unistd.h>
+#include <pthread.h>
 
 #include <EGL/egl.h>
 #include <GL/osmesa.h>
@@ -146,7 +147,7 @@ int pojavInitOpenGL() {
     return 0;
 }
 
-extern void updateMonitorSize(int width, int height);
+extern void updateMonitorSize(JNIEnv *env, int width, int height);
 
 EXTERNAL_API int pojavInit() {
     pojav_environ->glfwThreadVmEnv = get_attached_env(pojav_environ->runtimeJavaVMPtr);
@@ -154,11 +155,12 @@ EXTERNAL_API int pojavInit() {
         printf("Failed to attach Java-side JNIEnv to GLFW thread\n");
         return 0;
     }
+    glfw_main_thread = true;
     ANativeWindow_acquire(pojav_environ->pojavWindow);
     pojav_environ->savedWidth = ANativeWindow_getWidth(pojav_environ->pojavWindow);
     pojav_environ->savedHeight = ANativeWindow_getHeight(pojav_environ->pojavWindow);
     ANativeWindow_setBuffersGeometry(pojav_environ->pojavWindow,pojav_environ->savedWidth,pojav_environ->savedHeight,AHARDWAREBUFFER_FORMAT_R8G8B8X8_UNORM);
-    updateMonitorSize(pojav_environ->savedWidth, pojav_environ->savedHeight);
+    updateMonitorSize(pojav_environ->glfwThreadVmEnv, pojav_environ->savedWidth, pojav_environ->savedHeight);
     pojavInitOpenGL();
     return 1;
 }

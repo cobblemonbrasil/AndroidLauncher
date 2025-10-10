@@ -125,20 +125,28 @@ ADD_CALLBACK_WWIN(Scroll)
 
 #undef ADD_CALLBACK_WWIN
 
-void updateMonitorSize(int width, int height) {
-    (*pojav_environ->glfwThreadVmEnv)->CallStaticVoidMethod(pojav_environ->glfwThreadVmEnv, pojav_environ->vmGlfwClass, pojav_environ->method_internalChangeMonitorSize, width, height);
+void updateMonitorSize(JNIEnv *env, int width, int height) {
+    (*env)->CallStaticVoidMethod(env, pojav_environ->vmGlfwClass, pojav_environ->method_internalChangeMonitorSize, width, height);
 }
-void updateWindowSize(void* window) {
-    (*pojav_environ->glfwThreadVmEnv)->CallStaticVoidMethod(pojav_environ->glfwThreadVmEnv, pojav_environ->vmGlfwClass, pojav_environ->method_internalWindowSizeChanged, (jlong)window);
+void updateWindowSize(JNIEnv *env, void* window) {
+    (*env)->CallStaticVoidMethod(env, pojav_environ->vmGlfwClass, pojav_environ->method_internalWindowSizeChanged, (jlong)window);
 }
 
+#define VALID_ENV JNIEnv *env; \
+if(glfw_main_thread){ \
+    env = pojav_environ->glfwThreadVmEnv;                          \
+} else {                       \
+    (*pojav_environ->runtimeJavaVMPtr)->GetEnv(pojav_environ->runtimeJavaVMPtr, (void**) &env, JNI_VERSION_1_6);                               \
+};
+
 void pojavPumpEvents(void* window) {
+    VALID_ENV
     if(pojav_environ->shouldUpdateMouse) {
         pojav_environ->GLFW_invoke_CursorPos(window, floor(pojav_environ->cursorX),
                                              floor(pojav_environ->cursorY));
     }
     if(pojav_environ->shouldUpdateMonitorSize) {
-        updateWindowSize(window);
+        updateWindowSize(env,window);
     }
 
     size_t index = pojav_environ->outEventIndex;
@@ -174,6 +182,7 @@ void pojavPumpEvents(void* window) {
 
 /** Prepare the library for sending out callbacks to all windows */
 void pojavStartPumping() {
+    VALID_ENV
     size_t counter = atomic_load_explicit(&pojav_environ->eventCounter, memory_order_acquire);
     size_t index = pojav_environ->outEventIndex;
 
@@ -193,7 +202,7 @@ void pojavStartPumping() {
     }
     if(pojav_environ->shouldUpdateMonitorSize) {
         // Perform a monitor size update here to avoid doing it on every single window
-        updateMonitorSize(pojav_environ->savedWidth, pojav_environ->savedHeight);
+        updateMonitorSize(env, pojav_environ->savedWidth, pojav_environ->savedHeight);
         // Mark the monitor size as consumed (since GLFW was made aware of it)
         pojav_environ->monitorSizeConsumed = true;
     }
@@ -201,6 +210,7 @@ void pojavStartPumping() {
 
 /** Prepare the library for the next round of new events */
 void pojavStopPumping() {
+    VALID_ENV
     pojav_environ->outEventIndex = pojav_environ->outTargetIndex;
 
     // New events may have arrived while pumping, so remove only the difference before the start and end of execution

@@ -89,5 +89,6 @@ struct pojav_environ_s {
 #undef ADD_CALLBACK_WWIN
 };
 extern struct pojav_environ_s *pojav_environ;
+extern __thread bool glfw_main_thread;
 
 #endif //POJAVLAUNCHER_ENVIRON_H
