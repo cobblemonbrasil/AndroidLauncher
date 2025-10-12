@@ -416,10 +416,9 @@
     <string name="controller_remapper_expand_entry">কি-কোড পরিবর্তন করতে প্রসারিত করুন</string>
     <string name="preference_remap_controller_title">কন্ট্রোলার কি-বাইন্ডিং পরিবর্তন করুন</string>
     <string name="preference_remap_controller_description">প্রতিটি কন্ট্রোলার বোতামের জন্য কী কী সেট করা আছে তা পরিবর্তন করতে দেয়।</string>
-    <string name="mcl_button_discord">ডিসকর্ড</string>
+    <string name="mcl_button_social_media">ডিসকর্ড</string>
     <string name="ltw_render_distance_warning_msg">আপনার GPU 7 এর বেশি রেন্ডার দূরত্ব সমর্থন করে না Sodium অথবা অনুরূপ মড ছাড়া। OK চাপলে রেন্ডার দূরত্ব স্বয়ংক্রিয়ভাবে কমানো হবে।</string>
     <string name="mcl_button_open_directory">গেম ডিরেক্টরি খুলুন</string>
-    <string name="discord_invite" translatable="false">https://discord.gg/VHdwQFsaGX</string>
     <string name="local_login_bad_username_title">অযোগ্য ইউজারনেম</string>
     <string name="local_login_bad_username_text">ইউজারনেম ৩-১৬ অক্ষরের মধ্যে হতে হবে এবং কেবল ল্যাটিন অক্ষর, সংখ্যা ও আন্ডারস্কোর থাকতে হবে।</string>
     <string name="quick_setting_title">দ্রুত সেটিংস</string>

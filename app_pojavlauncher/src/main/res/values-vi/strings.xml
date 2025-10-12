@@ -412,10 +412,9 @@
     <string name="controller_remapper_expand_entry">Mở rộng để thay đổi mã phím</string>
     <string name="preference_remap_controller_title">Thay đổi liên kết nút tay cầm</string>
     <string name="preference_remap_controller_description">Cho phép bạn sửa đổi các phím bàn phím được gán cho mỗi nút điều khiển</string>
-    <string name="mcl_button_discord">Discord</string>
+    <string name="mcl_button_social_media">Discord</string>
     <string name="ltw_render_distance_warning_msg">GPU của bạn không thể kết xuất với khoảng cách trên 7 chunks nếu không có Sodium hoặc các mod tương tự khác. Khoảng cách kết xuất sẽ được tự điều chỉnh lại khi nhấn OK.</string>
     <string name="mcl_button_open_directory">Mở thư mục trò chơi</string>
-    <string name="discord_invite" translatable="false">https://discord.gg/VHdwQFsaGX</string>
     <string name="local_login_bad_username_title">Tên người dùng không phù hợp</string>
     <string name="local_login_bad_username_text">Tên người dùng phải có từ 3 đến 16 kí tự, và chỉ có chữ cái Latinh, chữ số và dấu gạch chân.</string>
     <string name="quick_setting_title">Cài đặt nhanh</string>
