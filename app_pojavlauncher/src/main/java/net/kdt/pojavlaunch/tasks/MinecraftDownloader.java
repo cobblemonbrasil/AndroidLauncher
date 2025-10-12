@@ -37,7 +37,6 @@ import java.util.Set;
 public class MinecraftDownloader extends Downloader {
 
     public static final String MINECRAFT_RES = "https://resources.download.minecraft.net/";
-    private static final String MAVEN_CENTRAL_REPO1 = "https://repo1.maven.org/maven2/";
     private ArrayList<TaskMetadata> mScheduledDownloadTasks;
     private ArrayList<File> mDeclaredNatives;
     private File mSourceJarFile; // The source client JAR picked during the inheritance process
@@ -254,7 +253,7 @@ public class MinecraftDownloader extends Downloader {
             if(Tools.shouldSkipLibrary(dependentLibrary)) continue;
             // Special handling for JNA Android natives
             if(dependentLibrary.name.startsWith("net.java.dev.jna:jna:")) {
-                scheduleNativeLibraryDownload(MAVEN_CENTRAL_REPO1, dependentLibrary);
+                scheduleNativeLibraryDownload(Tools.MAVEN_CENTRAL, dependentLibrary);
             }
             String libArtifactPath = Tools.artifactToPath(dependentLibrary);
             String sha1 = null, url = null;
