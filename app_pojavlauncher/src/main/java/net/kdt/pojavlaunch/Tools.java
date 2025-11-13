@@ -113,12 +113,15 @@ public final class Tools {
     public static String CTRLDEF_FILE;
 
 
-    private static File getPojavStorageRoot(Context ctx) {
+    private static @Nullable File getPojavStorageRoot(Context ctx) {
         if(SDK_INT >= 29) {
             return ctx.getExternalFilesDir(null);
-        }else{
-            return new File(Environment.getExternalStorageDirectory(),"games/PojavLauncher");
         }
+        File externalStorageDirectory = Environment.getExternalStorageDirectory();
+        if(externalStorageDirectory == null) return null;
+        File launcherRoot = new File(externalStorageDirectory,"games/PojavLauncher");
+        if(!Environment.MEDIA_MOUNTED.equals(Environment.getExternalStorageState(launcherRoot))) return null;
+        return launcherRoot;
     }
 
     /**
@@ -127,9 +130,7 @@ public final class Tools {
      * @return true if storage is fine, false if storage is not accessible
      */
     public static boolean checkStorageRoot(Context context) {
-        File externalFilesDir = DIR_GAME_HOME  == null ? Tools.getPojavStorageRoot(context) : new File(DIR_GAME_HOME);
-        //externalFilesDir == null when the storage is not mounted if it was obtained with the context call
-        return externalFilesDir != null && Environment.getExternalStorageState(externalFilesDir).equals(Environment.MEDIA_MOUNTED);
+        return getPojavStorageRoot(context) != null;
     }
 
     /**
@@ -169,7 +170,9 @@ public final class Tools {
      */
     public static void initStorageConstants(Context ctx){
         initEarlyConstants(ctx);
-        DIR_GAME_HOME = getPojavStorageRoot(ctx).getAbsolutePath();
+        File pojavStorageRoot = getPojavStorageRoot(ctx);
+        if(pojavStorageRoot == null) throw new RuntimeException("Whoops! You have to put the SD into your phone.");
+        DIR_GAME_HOME = pojavStorageRoot.getAbsolutePath();
         DIR_GAME_NEW = DIR_GAME_HOME + "/.minecraft";
         DIR_HOME_VERSION = DIR_GAME_NEW + "/versions";
         DIR_HOME_LIBRARY = DIR_GAME_NEW + "/libraries";
