@@ -252,7 +252,7 @@ public class MinecraftDownloader extends Downloader {
         for(DependentLibrary dependentLibrary : dependentLibraries) {
             if(Tools.shouldSkipLibrary(dependentLibrary)) continue;
             // Special handling for JNA Android natives
-            if(dependentLibrary.name.startsWith("net.java.dev.jna:jna:")) {
+            if(dependentLibrary.name.startsWith("net.java.dev.jna:jna:") && !dependentLibrary.replaced) {
                 scheduleNativeLibraryDownload(Tools.MAVEN_CENTRAL, dependentLibrary);
             }
             String libArtifactPath = Tools.artifactToPath(dependentLibrary);
