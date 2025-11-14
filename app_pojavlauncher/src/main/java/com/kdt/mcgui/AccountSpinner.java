@@ -24,11 +24,12 @@ import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.widget.AppCompatSpinner;
 import androidx.core.content.res.ResourcesCompat;
 
+import net.kdt.pojavlaunch.PojavApplication;
 import net.kdt.pojavlaunch.Tools;
 import net.kdt.pojavlaunch.authenticator.AuthType;
 import net.kdt.pojavlaunch.authenticator.BackgroundLogin;
+import net.kdt.pojavlaunch.authenticator.accounts.Accounts;
 import net.kdt.pojavlaunch.authenticator.accounts.MinecraftAccount;
-import net.kdt.pojavlaunch.authenticator.accounts.PojavProfile;
 import net.kdt.pojavlaunch.authenticator.impl.PresentedException;
 import net.kdt.pojavlaunch.authenticator.listener.LoginListener;
 import net.kdt.pojavlaunch.extra.ExtraConstants;
@@ -72,7 +73,7 @@ public class AccountSpinner extends AppCompatSpinner implements LoginListener, A
     private final ExtraListener<String> mElyByLoginListener = new LoginExtraListener(AuthType.ELY_BY);
     private final ExtraListener<String[]> mMojangLoginListener = (key, value) -> {
         try {
-            MinecraftAccount minecraftAccount = PojavProfile.createAccount(acc-> acc.username = value[0]);
+            MinecraftAccount minecraftAccount = Accounts.create(acc-> acc.username = value[0]);
             onLoginDone(minecraftAccount);
         }catch (IOException e) {
             onLoginError(e);
@@ -82,7 +83,7 @@ public class AccountSpinner extends AppCompatSpinner implements LoginListener, A
 
     /* Account main menu refresh listener */
     private final ExtraListener<Boolean> mRefreshAccountsListener = (k,v)->{
-        syncSelection();
+        reload();
         return false;
     };
 
@@ -121,9 +122,8 @@ public class AccountSpinner extends AppCompatSpinner implements LoginListener, A
     private void init() {
         mAdapter = new Adapter(getContext());
         setAdapter(mAdapter);
-        syncSelection();
         setOnItemSelectedListener(this);
-
+        reload();
 
         setBackgroundColor(getResources().getColor(R.color.background_status_bar));
         mLoginBarPaint.setColor(getResources().getColor(R.color.minebutton_color));
@@ -137,16 +137,26 @@ public class AccountSpinner extends AppCompatSpinner implements LoginListener, A
         ExtraCore.addExtraListener(ExtraConstants.REFRESH_ACCOUNT_SPINNER, mRefreshAccountsListener);
     }
 
-    public void syncSelection() {
-        MinecraftAccount minecraftAccount= PojavProfile.getCurrentProfileContent(false);
+    private void reload() {
+        PojavApplication.sExecutorService.execute(()->{
+            Accounts accounts = Accounts.load();
+            Tools.runOnUiThread(()->refresh(accounts));
+        });
+    }
 
-        int currentPosition = mAdapter.getPosition(minecraftAccount);
-        int defaultSelection = mAdapter.getCount() == 1 ? 0 : 1;
-        if(currentPosition == -1) currentPosition = defaultSelection;
-        setSelection(currentPosition);
+    private void refresh(Accounts accounts) {
+        mAdapter.setNotifyOnChange(false);
+        mAdapter.clear();
+        mAdapter.add(null);
+        mAdapter.setNotifyOnChange(true);
+        mAdapter.addAll(accounts.accounts);
 
-        if(minecraftAccount == null) return;
-        refreshAccount(minecraftAccount);
+        if(accounts.accounts.isEmpty()) {
+            setSelection(0);
+        } else {
+            setSelection(accounts.selectionIndex + 1);
+            refreshAccount(Objects.requireNonNull((MinecraftAccount) getSelectedItem()));
+        }
     }
 
     private void refreshAccount(MinecraftAccount minecraftAccount) {
@@ -185,10 +195,10 @@ public class AccountSpinner extends AppCompatSpinner implements LoginListener, A
         invalidate();
 
         Toast.makeText(getContext(), R.string.main_login_done, Toast.LENGTH_SHORT).show();
-        PojavProfile.setCurrentProfile(account);
-        mAdapter.refresh();
-        syncSelection();
+        Accounts.setCurrent(account);
+        reload();
     }
+
 
     @Override
     public void onLoginError(Throwable errorMessage) {
@@ -231,7 +241,7 @@ public class AccountSpinner extends AppCompatSpinner implements LoginListener, A
             }
             return;
         }
-        PojavProfile.setCurrentProfile(minecraftAccount);
+        Accounts.setCurrent(minecraftAccount);
         refreshAccount(minecraftAccount);
         dismissPopup();
     }
@@ -253,15 +263,6 @@ public class AccountSpinner extends AppCompatSpinner implements LoginListener, A
         public Adapter(@NonNull Context context) {
             super(context, R.layout.item_minecraft_account);
             mInflater = LayoutInflater.from(context);
-            refresh();
-        }
-
-        public void refresh() {
-            setNotifyOnChange(false); // Disable change notifications to not spook the user
-            clear();
-            add(null); // "Add account" stub
-            setNotifyOnChange(true);
-            addAll(PojavProfile.getAccounts());
         }
 
         @NonNull
@@ -337,8 +338,8 @@ public class AccountSpinner extends AppCompatSpinner implements LoginListener, A
                     .setPositiveButton(android.R.string.cancel, null)
                     .setNeutralButton(R.string.global_delete, (dialog, which) -> {
                         MinecraftAccount account = getItem(position);
-                        PojavProfile.deleteProfile(account);
-                        refresh();
+                        Accounts.delete(account);
+                        reload();
                     })
                     .show();
         }

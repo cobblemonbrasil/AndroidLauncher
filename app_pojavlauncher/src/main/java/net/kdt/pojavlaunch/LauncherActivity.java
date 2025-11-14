@@ -23,7 +23,7 @@ import androidx.fragment.app.FragmentManager;
 
 import com.kdt.mcgui.ProgressLayout;
 
-import net.kdt.pojavlaunch.authenticator.accounts.PojavProfile;
+import net.kdt.pojavlaunch.authenticator.accounts.Accounts;
 import net.kdt.pojavlaunch.extra.ExtraConstants;
 import net.kdt.pojavlaunch.extra.ExtraCore;
 import net.kdt.pojavlaunch.extra.ExtraListener;
@@ -115,7 +115,7 @@ public class LauncherActivity extends BaseActivity {
             return false;
         }
 
-        if(PojavProfile.getCurrentProfileContent(true) == null){
+        if(Accounts.getCurrent() == null){
             Toast.makeText(this, R.string.no_saved_accounts, Toast.LENGTH_LONG).show();
             ExtraCore.setValue(ExtraConstants.SELECT_AUTH_METHOD, true);
             return false;

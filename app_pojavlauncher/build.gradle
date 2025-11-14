@@ -79,7 +79,7 @@ android {
         targetSdkVersion 35
         versionCode getDateSeconds()
         versionName getVersionName()
-        multiDexEnabled true //important
+        multiDexEnabled false //important
         resValue 'string', 'curseforge_api_key', getCFApiKey()
     }
 

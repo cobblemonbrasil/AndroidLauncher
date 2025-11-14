@@ -41,7 +41,7 @@ import androidx.drawerlayout.widget.DrawerLayout;
 
 import com.kdt.LoggerView;
 
-import net.kdt.pojavlaunch.authenticator.accounts.PojavProfile;
+import net.kdt.pojavlaunch.authenticator.accounts.Accounts;
 import net.kdt.pojavlaunch.customcontrols.ControlButtonMenuListener;
 import net.kdt.pojavlaunch.customcontrols.ControlData;
 import net.kdt.pojavlaunch.customcontrols.ControlDrawerData;
@@ -106,7 +106,7 @@ public class MainActivity extends BaseActivity implements ControlButtonMenuListe
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         instance = InstanceManager.loadSelectedInstance();
-        minecraftAccount = PojavProfile.getCurrentProfileContent(true);
+        minecraftAccount = Accounts.getCurrent();
         if(instance == null) {
             Toast.makeText(this, R.string.instance_dir_missing, Toast.LENGTH_LONG).show();
             finish();
