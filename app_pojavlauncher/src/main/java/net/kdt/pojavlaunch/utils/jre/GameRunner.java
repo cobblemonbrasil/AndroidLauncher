@@ -196,6 +196,10 @@ public class GameRunner {
 
         if(rendererName.equals("opengles3_ltw")) fixDeathCloud();
 
+        if(rendererName.equals("opengles3_ltw") && GLInfoUtils.getGlInfo().forcedMsaa) {
+            if(showDialog(activity, R.string.ltw_4x_msaa_warning_msg)) return;
+        }
+
         int requiredJavaVersion = 8;
         if(versionInfo.javaVersion != null) requiredJavaVersion = versionInfo.javaVersion.majorVersion;
 
