@@ -471,4 +471,5 @@
     <string name="vml_err_exists">The VM is already loaded</string>
     <string name="vml_err_inval">Bad arguments</string>
     <string name="gr_err_renderer_load_Failed">Failed to load renderer library</string>
+    <string name="directory_io_error">Unable to read necessary directory</string>
 </resources>

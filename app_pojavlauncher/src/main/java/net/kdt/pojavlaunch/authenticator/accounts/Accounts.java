@@ -5,6 +5,7 @@ import android.util.Log;
 import net.kdt.pojavlaunch.Tools;
 import net.kdt.pojavlaunch.authenticator.AuthType;
 import net.kdt.pojavlaunch.prefs.LauncherPreferences;
+import net.kdt.pojavlaunch.utils.FileUtils;
 import net.kdt.pojavlaunch.utils.JSONUtils;
 
 import java.io.File;
@@ -25,9 +26,11 @@ public class Accounts {
         this.selectionIndex = selectionIndex;
     }
 
-	public static Accounts load()  {
-		File[] accountFiles = new File(Tools.DIR_ACCOUNT_NEW).listFiles();
-		if(accountFiles == null) return null;
+	public static Accounts load() throws IOException {
+		File accountsDir = new File(Tools.DIR_ACCOUNT_NEW);
+		FileUtils.ensureDirectory(accountsDir);
+		File[] accountFiles = accountsDir.listFiles();
+		if(accountFiles == null) throw new IOException("Failed to create account directory");
 		String selectedAccount = getSelectedAccount();
 		ArrayList<MinecraftAccount> accounts = new ArrayList<>(accountFiles.length);
 		int selectedAccountIdx = 0;

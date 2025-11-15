@@ -139,8 +139,12 @@ public class AccountSpinner extends AppCompatSpinner implements LoginListener, A
 
     private void reload() {
         PojavApplication.sExecutorService.execute(()->{
-            Accounts accounts = Accounts.load();
-            Tools.runOnUiThread(()->refresh(accounts));
+            try {
+                Accounts accounts = Accounts.load();
+                Tools.runOnUiThread(()->refresh(accounts));
+            } catch (IOException e) {
+                 throw new RuntimeException(e);
+            }
         });
     }
 
