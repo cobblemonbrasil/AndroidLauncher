@@ -41,6 +41,7 @@ import androidx.appcompat.app.AlertDialog;
 import androidx.core.app.NotificationManagerCompat;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentActivity;
+import androidx.fragment.app.FragmentManager;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -716,14 +717,13 @@ public final class Tools {
     }
 
     public static String getFileName(Context ctx, Uri uri) {
-        Cursor c = ctx.getContentResolver().query(uri, null, null, null, null);
-        if(c == null) return uri.getLastPathSegment(); // idk myself but it happens on asus file manager
-        c.moveToFirst();
-        int columnIndex = c.getColumnIndex(OpenableColumns.DISPLAY_NAME);
-        if(columnIndex == -1) return uri.getLastPathSegment();
-        String fileName = c.getString(columnIndex);
-        c.close();
-        return fileName;
+        try(Cursor c = ctx.getContentResolver().query(uri, null, null, null, null)) {
+            if(c == null) return uri.getLastPathSegment(); // idk myself but it happens on asus file manager
+            c.moveToFirst();
+            int columnIndex = c.getColumnIndex(OpenableColumns.DISPLAY_NAME);
+            if(columnIndex == -1) return uri.getLastPathSegment();
+            return c.getString(columnIndex);
+        }
     }
 
     /** Swap the main fragment with another */
@@ -738,8 +738,8 @@ public final class Tools {
     }
 
     public static void backToMainMenu(FragmentActivity fragmentActivity) {
-        fragmentActivity.getSupportFragmentManager()
-                .popBackStack("ROOT", 0);
+        fragmentActivity.getSupportFragmentManager().popBackStack(null, FragmentManager.POP_BACK_STACK_INCLUSIVE);
+
     }
 
     /** Remove the current fragment */

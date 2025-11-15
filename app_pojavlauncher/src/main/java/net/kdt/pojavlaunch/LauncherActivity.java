@@ -32,7 +32,7 @@ import net.kdt.pojavlaunch.fragments.MicrosoftLoginFragment;
 import net.kdt.pojavlaunch.fragments.SelectAuthFragment;
 import net.kdt.pojavlaunch.instances.Instance;
 import net.kdt.pojavlaunch.instances.InstanceInstaller;
-import net.kdt.pojavlaunch.instances.InstanceManager;
+import net.kdt.pojavlaunch.instances.Instances;
 import net.kdt.pojavlaunch.lifecycle.ContextAwareDoneListener;
 import net.kdt.pojavlaunch.lifecycle.ContextExecutor;
 import net.kdt.pojavlaunch.modloaders.modpacks.imagecache.IconCacheJanitor;
@@ -103,7 +103,7 @@ public class LauncherActivity extends BaseActivity {
             return false;
         }
 
-        Instance selectedInstance = InstanceManager.getSelectedListedInstance();
+        Instance selectedInstance = Instances.loadSelectedInstance();
 
         if(selectedInstance.installer != null) {
             selectedInstance.installer.start();
@@ -159,17 +159,6 @@ public class LauncherActivity extends BaseActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_pojav_launcher);
-        FragmentManager fragmentManager = getSupportFragmentManager();
-        // If we don't have a back stack root yet...
-        if(fragmentManager.getBackStackEntryCount() < 1) {
-            // Manually add the first fragment to the backstack to get easily back to it
-            // There must be a better way to handle the root though...
-            // (artDev: No, there is not. I've spent days researching this for another unrelated project.)
-            fragmentManager.beginTransaction()
-                    .setReorderingAllowed(true)
-                    .addToBackStack("ROOT")
-                    .add(R.id.container_fragment, MainMenuFragment.class, null, "ROOT").commit();
-        }
 
         IconCacheJanitor.runJanitor();
         mRequestNotificationPermissionLauncher = registerForActivityResult(

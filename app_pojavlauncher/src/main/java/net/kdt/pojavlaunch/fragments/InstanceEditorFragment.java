@@ -25,7 +25,7 @@ import net.kdt.pojavlaunch.Tools;
 import net.kdt.pojavlaunch.extra.ExtraConstants;
 import net.kdt.pojavlaunch.extra.ExtraCore;
 import net.kdt.pojavlaunch.instances.Instance;
-import net.kdt.pojavlaunch.instances.InstanceManager;
+import net.kdt.pojavlaunch.instances.Instances;
 import net.kdt.pojavlaunch.multirt.MultiRTUtils;
 import net.kdt.pojavlaunch.multirt.RTSpinnerAdapter;
 import net.kdt.pojavlaunch.multirt.Runtime;
@@ -89,14 +89,12 @@ public class InstanceEditorFragment extends Fragment implements CropperUtils.Cro
         });
 
         mDeleteButton.setOnClickListener(v -> {
-            if(InstanceManager.getImmutableInstanceList().size() > 1){
-                InstanceIconProvider.dropIcon(mInstance);
-                Tools.removeCurrentFragment(requireActivity());
-                try {
-                    InstanceManager.removeInstance(mInstance);
-                }catch (IOException e) {
-                    Tools.showErrorRemote(e);
-                }
+            InstanceIconProvider.dropIcon(mInstance);
+            Tools.removeCurrentFragment(requireActivity());
+            try {
+                Instances.removeInstance(mInstance);
+            }catch (IOException e) {
+                Tools.showErrorRemote(e);
             }
         });
 
@@ -123,7 +121,7 @@ public class InstanceEditorFragment extends Fragment implements CropperUtils.Cro
             mSharedDataCheckbox.setText(text);
         });
 
-        loadValues(InstanceManager.getSelectedListedInstance(), view.getContext());
+        loadValues(Instances.loadSelectedInstance(), view.getContext());
     }
 
     private View.OnClickListener getControlSelectListener() {

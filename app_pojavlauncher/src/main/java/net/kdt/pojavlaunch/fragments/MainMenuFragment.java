@@ -25,7 +25,7 @@ import net.kdt.pojavlaunch.Tools;
 import net.kdt.pojavlaunch.contracts.OpenDocumentWithExtension;
 import net.kdt.pojavlaunch.extra.ExtraConstants;
 import net.kdt.pojavlaunch.extra.ExtraCore;
-import net.kdt.pojavlaunch.instances.InstanceManager;
+import net.kdt.pojavlaunch.instances.Instances;
 import net.kdt.pojavlaunch.progresskeeper.ProgressKeeper;
 import net.kdt.pojavlaunch.utils.FileUtils;
 
@@ -78,7 +78,7 @@ public class MainMenuFragment extends Fragment {
     }
 
     private void openGameDirectory(Context context) {
-        File gameDirectory = InstanceManager.getSelectedListedInstance().getGameDirectory();
+        File gameDirectory = Instances.loadSelectedInstance().getGameDirectory();
         if(FileUtils.ensureDirectorySilently(gameDirectory)) {
             openPath(context, gameDirectory, false);
         }else {
