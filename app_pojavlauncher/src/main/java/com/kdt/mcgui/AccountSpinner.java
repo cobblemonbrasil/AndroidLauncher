@@ -167,9 +167,12 @@ public class AccountSpinner extends AppCompatSpinner implements LoginListener, A
         // Wait until all tasks (including other possible login tasks) are done before
         // attempting to refresh the account.
         ProgressKeeper.waitUntilDone(()->{
-            AuthType authType = minecraftAccount.authType;
-            if(authType.requiresLogin() && System.currentTimeMillis() > minecraftAccount.expiresAt) {
-                authType.createAuth().refreshAccount(this, minecraftAccount);
+            // Reload the account data before attempting to refresh (what if it was already refreshed in the background?)
+            MinecraftAccount refreshAccount = minecraftAccount.reload();
+            if(refreshAccount == null) return;
+            AuthType authType = refreshAccount.authType;
+            if(authType.requiresLogin() && System.currentTimeMillis() > refreshAccount.expiresAt) {
+                authType.createAuth().refreshAccount(this, refreshAccount);
             }
         });
     }

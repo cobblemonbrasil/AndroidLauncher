@@ -87,7 +87,7 @@ public class MicrosoftBackgroundLogin implements BackgroundLogin{
                 continuation.call();
             }catch (Exception e){
                 Log.e("MicroAuth", "Exception thrown during authentication", e);
-                loginListener.onLoginError(e);
+                Tools.runOnUiThread(()->loginListener.onLoginError(e));
             } finally {
                 ProgressLayout.clearProgress(ProgressLayout.AUTHENTICATE);
             }

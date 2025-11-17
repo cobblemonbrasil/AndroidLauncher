@@ -49,7 +49,7 @@ public class ElyByBackgroundLogin implements BackgroundLogin {
                 continuation.call();
             }catch (Exception e){
                 Log.e("MicroAuth", "Exception thrown during authentication", e);
-                loginListener.onLoginError(e);
+                Tools.runOnUiThread(()->loginListener.onLoginError(e));
             }
             ProgressLayout.clearProgress(ProgressLayout.AUTHENTICATE);
         });
