@@ -78,10 +78,14 @@ public class Instances {
     }
 
     public static Instances loadDisplay() throws IOException {
-        int[] selectionIndex = new int[] {0};
+        int[] selectionIndex = new int[] { -1 };
         List<DisplayInstance> instances = loadInstances(DisplayInstance.class, selectionIndex);
         if(instances.isEmpty()) {
             createFirstTimeInstance();
+            return loadDisplay();
+        }else if(selectionIndex[0] == -1) {
+            setSelectedInstance(instances.get(0));
+            selectionIndex[0] = 0;
         }
         return new Instances(Collections.unmodifiableList(instances), selectionIndex[0]);
     }
