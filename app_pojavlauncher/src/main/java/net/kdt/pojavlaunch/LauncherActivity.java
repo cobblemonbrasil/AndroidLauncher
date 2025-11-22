@@ -105,6 +105,11 @@ public class LauncherActivity extends BaseActivity {
 
         Instance selectedInstance = Instances.loadSelectedInstance();
 
+        if(selectedInstance == null) {
+            Toast.makeText(this, R.string.no_instance, Toast.LENGTH_LONG).show();
+            return false;
+        }
+
         if(selectedInstance.installer != null) {
             selectedInstance.installer.start();
             return false;

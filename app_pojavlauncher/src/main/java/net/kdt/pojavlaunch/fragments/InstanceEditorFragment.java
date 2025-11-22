@@ -14,6 +14,7 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.Spinner;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.annotation.NonNull;
@@ -121,7 +122,14 @@ public class InstanceEditorFragment extends Fragment implements CropperUtils.Cro
             mSharedDataCheckbox.setText(text);
         });
 
-        loadValues(Instances.loadSelectedInstance(), view.getContext());
+        Instance selectedInstance = Instances.loadSelectedInstance();
+        Context context = view.getContext();
+        if(selectedInstance == null) {
+            Toast.makeText(context, R.string.no_instance, Toast.LENGTH_LONG).show();
+            getParentFragmentManager().popBackStack();
+        }else {
+            loadValues(selectedInstance, context);
+        }
     }
 
     private View.OnClickListener getControlSelectListener() {
