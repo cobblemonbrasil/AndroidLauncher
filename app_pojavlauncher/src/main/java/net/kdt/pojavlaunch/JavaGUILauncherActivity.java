@@ -231,9 +231,11 @@ public class JavaGUILauncherActivity extends BaseActivity implements View.OnTouc
         public static JarFileProperties read(File file) throws IOException {
             try (JarFile jarFile = new JarFile(file)) {
                 Manifest manifest = jarFile.getManifest();
-
+                if(manifest == null) return null;
                 Attributes mainAttrs = manifest.getMainAttributes();
+                if(mainAttrs == null) return null;
                 String mainClass = mainAttrs.getValue("Main-Class");
+                if(mainClass == null) return null;
                 int javaVersion = getJavaVersion(jarFile, mainClass);
                 return new JarFileProperties(mainClass, javaVersion);
             }
