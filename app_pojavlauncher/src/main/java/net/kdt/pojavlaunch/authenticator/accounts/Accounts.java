@@ -28,7 +28,9 @@ public class Accounts {
 
 	public static Accounts load() throws IOException {
 		File accountsDir = new File(Tools.DIR_ACCOUNT_NEW);
-		FileUtils.ensureDirectory(accountsDir);
+        synchronized (Accounts.class) {
+            FileUtils.ensureDirectory(accountsDir);
+        }
 		File[] accountFiles = accountsDir.listFiles();
 		if(accountFiles == null) throw new IOException("Failed to create account directory");
 		String selectedAccount = getSelectedAccount();

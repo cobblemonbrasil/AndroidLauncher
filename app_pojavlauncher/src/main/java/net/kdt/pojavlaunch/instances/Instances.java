@@ -56,7 +56,9 @@ public class Instances {
     }
 
     private static <T extends DisplayInstance> List<T> loadInstances(Class<T> tClass, int[] selectionDst) throws IOException {
-        FileUtils.ensureDirectory(sInstancePath);
+        synchronized (sInstancePath) {
+            FileUtils.ensureDirectory(sInstancePath);
+        }
         File[] instanceDirectories = sInstancePath.listFiles(Instances::filterInstanceDirectories);
         if(instanceDirectories == null) throw new IOException("Failed to enumerate instances");
         File selectedInstanceLocation = selectionDst != null ? selectedInstanceLocation() : null;
