@@ -56,6 +56,7 @@ public class Accounts {
 			Log.w("Accounts", "Failed to load account", e);
 			return null;
 		}
+        if(acc == null) return null;
 		acc.mSaveLocation = source;
 
 		if (acc.accessToken == null) {
