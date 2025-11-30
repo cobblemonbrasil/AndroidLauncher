@@ -75,13 +75,8 @@ public class ControlLayout extends FrameLayout {
 	public void loadLayout(String jsonPath) throws IOException, JsonSyntaxException {
 		Point size = new Point(getWidth(), getHeight());
 		CustomControls layout = LayoutConverter.loadAndConvertIfNecessary(size, jsonPath);
-		if(layout != null) {
-			loadLayout(layout);
-			updateLoadedFileName(jsonPath);
-			return;
-		}
-
-		throw new IOException("Unsupported control layout version");
+        loadLayout(layout);
+        updateLoadedFileName(jsonPath);
 	}
 
 	public void loadLayout(CustomControls controlLayout) {
