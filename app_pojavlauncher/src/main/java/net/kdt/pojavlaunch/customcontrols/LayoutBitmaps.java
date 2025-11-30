@@ -48,6 +48,10 @@ public class LayoutBitmaps {
         return newKey;
     }
 
+    public static LayoutBitmaps createEmpty() {
+        return new LayoutBitmaps();
+    }
+
     private static ControlsContainer createEmpty(String controlsJson) {
         return new ControlsContainer(controlsJson, new LayoutBitmaps());
     }
