@@ -78,7 +78,7 @@ public class LauncherActivity extends BaseActivity {
     private final ExtraListener<Boolean> mSelectAuthMethod = (key, value) -> {
         // The "false" value is used to stop auth method selection
         FragmentManager manager = getSupportFragmentManager();
-        if(!value || !manager.isStateSaved()) return false;
+        if(!value || manager.isStateSaved()) return false;
         Fragment fragment = manager.findFragmentById(mFragmentView.getId());
         // Allow starting the add account only from the main menu, should it be moved to fragment itself ?
         if(!(fragment instanceof MainMenuFragment)) return false;
@@ -90,7 +90,7 @@ public class LauncherActivity extends BaseActivity {
     /* Listener for the settings fragment */
     private final View.OnClickListener mSettingButtonListener = v -> {
         FragmentManager manager = getSupportFragmentManager();
-        if(!manager.isStateSaved()) return;
+        if(manager.isStateSaved()) return;
         Fragment fragment = manager.findFragmentById(mFragmentView.getId());
         if(fragment instanceof MainMenuFragment){
             Tools.swapFragment(this, LauncherPreferenceFragment.class, SETTING_FRAGMENT_TAG, null);
