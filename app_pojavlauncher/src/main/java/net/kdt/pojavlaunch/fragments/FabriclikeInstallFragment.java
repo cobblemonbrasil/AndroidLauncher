@@ -212,7 +212,7 @@ public abstract class FabriclikeInstallFragment extends Fragment implements Modl
     }
 
     @Override
-    public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
+    public void onCheckedChanged(@NonNull CompoundButton compoundButton, boolean b) {
         updateGameSpinner();
         updateLoaderSpinner();
     }
@@ -259,7 +259,7 @@ public abstract class FabriclikeInstallFragment extends Fragment implements Modl
     }
 
     private void updateLoaderSpinner() {
-        if(mLoaderVersionArray == null) return;
+        if(mLoaderVersionArray == null || isDetached()) return;
         mLoaderVersionSpinner.setAdapter(createAdapter(mLoaderVersionArray, mOnlyStableCheckbox.isChecked()));
     }
 
@@ -306,7 +306,7 @@ public abstract class FabriclikeInstallFragment extends Fragment implements Modl
     }
 
     private void updateGameSpinner() {
-        if(mGameVersionArray == null) return;
+        if(mGameVersionArray == null || isDetached()) return;
         mGameVersionSpinner.setAdapter(createAdapter(mGameVersionArray, mOnlyStableCheckbox.isChecked()));
     }
 
