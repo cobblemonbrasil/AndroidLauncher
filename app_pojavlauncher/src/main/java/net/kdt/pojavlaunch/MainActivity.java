@@ -78,8 +78,6 @@ public class MainActivity extends BaseActivity implements ControlButtonMenuListe
     public static volatile ClipboardManager GLOBAL_CLIPBOARD;
     public static final String INTENT_MINECRAFT_VERSION = "intent_version";
 
-    volatile public static boolean isInputStackCall;
-
     public static TouchCharInput touchCharInput;
     private MinecraftGLSurface minecraftGLView;
     private static Touchpad touchpad;
@@ -250,7 +248,6 @@ public class MainActivity extends BaseActivity implements ControlButtonMenuListe
         drawerLayout = findViewById(R.id.main_drawer_options);
         navDrawer = findViewById(R.id.main_navigation_view);
         loggerView = findViewById(R.id.mainLoggerView);
-        mControlLayout = findViewById(R.id.main_control_layout);
         touchCharInput = findViewById(R.id.mainTouchCharInput);
         mDrawerPullButton = findViewById(R.id.drawer_button);
         mHotbarView = findViewById(R.id.hotbar_view);
@@ -304,6 +301,7 @@ public class MainActivity extends BaseActivity implements ControlButtonMenuListe
         // Layout resize is practically guaranteed on a configuration change, and `onConfigurationChanged`
         // does not implicitly start a layout. So, request a layout and expect the screen dimensions to be valid after the]
         // post.
+        if(mControlLayout == null) return;
         mControlLayout.requestLayout();
         mControlLayout.post(()->{
             // Child of mControlLayout, so refreshing size here is correct
