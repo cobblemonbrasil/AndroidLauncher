@@ -74,9 +74,17 @@ public class ControlLayout extends FrameLayout {
 
 	public void loadLayout(String jsonPath) throws IOException, JsonSyntaxException {
 		Point size = new Point(getWidth(), getHeight());
-		CustomControls layout = LayoutConverter.loadAndConvertIfNecessary(size, jsonPath);
-        loadLayout(layout);
-        updateLoadedFileName(jsonPath);
+        try {
+            CustomControls layout = LayoutConverter.loadAndConvertIfNecessary(size, jsonPath);
+            loadLayout(layout);
+            updateLoadedFileName(jsonPath);
+        }catch (IOException | JsonSyntaxException e) {
+            // Load an empty layout on exception to avoid breakage when adding buttons in the editor
+            CustomControls customControls = new CustomControls();
+            customControls.mLayoutBitmaps = LayoutBitmaps.createEmpty();
+            loadLayout(customControls);
+            throw e;
+        }
 	}
 
 	public void loadLayout(CustomControls controlLayout) {
