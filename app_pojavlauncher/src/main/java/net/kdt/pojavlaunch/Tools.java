@@ -719,7 +719,7 @@ public final class Tools {
     public static String getFileName(Context ctx, Uri uri) {
         try(Cursor c = ctx.getContentResolver().query(uri, null, null, null, null)) {
             if(c == null) return uri.getLastPathSegment(); // idk myself but it happens on asus file manager
-            c.moveToFirst();
+            if(!c.moveToFirst()) return uri.getLastPathSegment();
             int columnIndex = c.getColumnIndex(OpenableColumns.DISPLAY_NAME);
             if(columnIndex == -1) return uri.getLastPathSegment();
             return c.getString(columnIndex);
