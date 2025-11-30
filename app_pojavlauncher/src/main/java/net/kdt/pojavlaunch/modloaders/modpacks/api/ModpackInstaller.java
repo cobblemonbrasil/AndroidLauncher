@@ -4,6 +4,7 @@ import com.kdt.mcgui.ProgressLayout;
 
 import git.artdeell.mojo.R;
 import net.kdt.pojavlaunch.Tools;
+import net.kdt.pojavlaunch.instances.InstanceInstaller;
 import net.kdt.pojavlaunch.instances.Instances;
 import net.kdt.pojavlaunch.instances.Instance;
 import net.kdt.pojavlaunch.modloaders.modpacks.imagecache.ModIconCache;
@@ -53,7 +54,9 @@ public class ModpackInstaller {
             if(modLoaderInfo == null) throw new IOException("Unknown modpack mod loader information");
 
             if(modLoaderInfo.requiresGuiInstallation()) {
-                instance.installer = modLoaderInfo.createInstaller();
+                InstanceInstaller instanceInstaller = modLoaderInfo.createInstaller();
+                if(instanceInstaller == null) throw new IOException("Failed to prepare data for instance installation");
+                instance.installer = instanceInstaller;
             } else {
                 String versionId = modLoaderInfo.installHeadlessly();
                 if(versionId == null) throw new IOException("Unknown mod loader version");
