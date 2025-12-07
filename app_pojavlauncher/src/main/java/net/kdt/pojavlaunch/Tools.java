@@ -723,6 +723,10 @@ public final class Tools {
             int columnIndex = c.getColumnIndex(OpenableColumns.DISPLAY_NAME);
             if(columnIndex == -1) return uri.getLastPathSegment();
             return c.getString(columnIndex);
+        } catch (Exception e) {
+            // Turns out that the content resolver can throw you literally anything if the underlying provider crashes
+            // Fall back in that case
+            return uri.getLastPathSegment();
         }
     }
 
