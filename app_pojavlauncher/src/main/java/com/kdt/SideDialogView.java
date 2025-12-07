@@ -157,7 +157,9 @@ public abstract class SideDialogView {
         // To avoid UI sizing issue when the dialog is not fully inflated
         onAppear();
         ViewGroup parent = getParent();
-        Tools.runOnUiThread(() -> {
+        mScrollView.post(()->{
+            if(mDialogLayout == null) return;
+            if(mSideDialogAnimator == null) throw new RuntimeException("Unexpected side animator state when dialog is inflated");
             if (fromRight) {
                 if (!mDisplaying || !isAtRight()) {
                     mSideDialogAnimator.setFloatValues(parent.getWidth(), parent.getWidth() - mScrollView.getWidth() - mMargin);
@@ -175,6 +177,7 @@ public abstract class SideDialogView {
     }
 
     protected final boolean isAtRight() {
+        if(mDialogLayout == null) throw new RuntimeException("attempted to check dialog position when deflated");
         return mDialogLayout.getX() > getParent().getWidth() / 2f;
     }
 
