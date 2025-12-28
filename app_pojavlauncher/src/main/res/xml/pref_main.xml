@@ -66,8 +66,12 @@
         android:key="notification_permission_request"
         />
 
-
-
+    <Preference
+        app:key="license_key"
+        app:title="@string/license_title"
+        app:summary="@string/license_text"
+        app:selectable="false">
+    </Preference>
 
 
 </PreferenceScreen>

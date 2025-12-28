@@ -129,11 +129,11 @@ public class MicrosoftBackgroundLogin implements BackgroundLogin{
         Log.i("MicrosoftLogin", "isRefresh=" + isRefresh + ", authCode= "+code);
 
         String formData = CommonLoginUtils.convertToFormData(
-                "client_id", "00000000402b5328",
+                "client_id", Tools.AZURE_CLIENT_ID,
                 isRefresh ? "refresh_token" : "code", code,
                 "grant_type", isRefresh ? "refresh_token" : "authorization_code",
                 "redirect_url", "https://login.live.com/oauth20_desktop.srf",
-                "scope", "service::user.auth.xboxlive.com::MBI_SSL"
+                "scope", Tools.LOGIN_SCOPE
         );
 
         OAuthTokenResponse response = CommonLoginUtils.exchangeAuthCode(url, formData);
@@ -148,7 +148,7 @@ public class MicrosoftBackgroundLogin implements BackgroundLogin{
         JSONObject properties = new JSONObject();
         properties.put("AuthMethod", "RPS");
         properties.put("SiteName", "user.auth.xboxlive.com");
-        properties.put("RpsTicket", accessToken);
+        properties.put("RpsTicket", String.format("d=%s", accessToken));
         data.put("Properties",properties);
         data.put("RelyingParty", "http://auth.xboxlive.com");
         data.put("TokenType", "JWT");

@@ -8,15 +8,12 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
-import android.widget.ImageButton;
 import android.widget.Toast;
 
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
-
-import com.kdt.mcgui.mcVersionSpinner;
 
 import net.kdt.pojavlaunch.CustomControlsActivity;
 import git.artdeell.mojo.R;
@@ -34,8 +31,6 @@ import java.io.File;
 public class MainMenuFragment extends Fragment {
     public static final String TAG = "MainMenuFragment";
 
-    private mcVersionSpinner mVersionSpinner;
-
     private final ActivityResultLauncher<Object> mModInstallerLauncher =
             registerForActivityResult(new OpenDocumentWithExtension("jar"), (data)->{
                 if(data != null) Tools.launchModInstaller(requireContext(), data);
@@ -47,6 +42,8 @@ public class MainMenuFragment extends Fragment {
 
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        Button mSiteButton = view.findViewById(R.id.site_button);
+        Button mStoreButton = view.findViewById(R.id.store_button);
         Button mNewsButton = view.findViewById(R.id.news_button);
         Button mDiscordButton = view.findViewById(R.id.social_media_button);
         Button mCustomControlButton = view.findViewById(R.id.custom_control_button);
@@ -54,24 +51,20 @@ public class MainMenuFragment extends Fragment {
         Button mShareLogsButton = view.findViewById(R.id.share_logs_button);
         Button mOpenDirectoryButton = view.findViewById(R.id.open_files_button);
 
-        ImageButton mEditProfileButton = view.findViewById(R.id.edit_profile_button);
         Button mPlayButton = view.findViewById(R.id.play_button);
-        mVersionSpinner = view.findViewById(R.id.mc_version_spinner);
 
-        mNewsButton.setOnClickListener(v -> Tools.openURL(requireActivity(), Tools.URL_HOME));
+        mSiteButton.setOnClickListener(v -> Tools.openURL(requireActivity(), getString(R.string.site_url)));
+        mStoreButton.setOnClickListener(v -> Tools.openURL(requireActivity(), getString(R.string.store_url)));
+        mNewsButton.setOnClickListener(v -> Tools.openURL(requireActivity(), getString(R.string.news_url)));
         mDiscordButton.setOnClickListener(v -> Tools.openURL(requireActivity(), getString(R.string.social_media_invite)));
         mCustomControlButton.setOnClickListener(v -> startActivity(new Intent(requireContext(), CustomControlsActivity.class)));
         mInstallJarButton.setOnClickListener(v -> runInstallerWithConfirmation());
-        mEditProfileButton.setOnClickListener(v -> mVersionSpinner.openProfileEditor(requireActivity()));
 
         mPlayButton.setOnClickListener(v -> ExtraCore.setValue(ExtraConstants.LAUNCH_GAME, true));
-
         mShareLogsButton.setOnClickListener((v) -> shareLog(requireContext()));
-
         mOpenDirectoryButton.setOnClickListener((v)-> openGameDirectory(v.getContext()));
 
-
-        mNewsButton.setOnLongClickListener((v)->{
+        mCustomControlButton.setOnLongClickListener((v)->{
             Tools.swapFragment(requireActivity(), GamepadMapperFragment.class, GamepadMapperFragment.TAG, null);
             return true;
         });
@@ -89,7 +82,6 @@ public class MainMenuFragment extends Fragment {
     @Override
     public void onResume() {
         super.onResume();
-        ExtraCore.setValue(ExtraConstants.REFRESH_ACCOUNT_SPINNER, true);
     }
 
     private void runInstallerWithConfirmation() {

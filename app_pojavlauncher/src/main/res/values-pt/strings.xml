@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources xmlns:tools="http://schemas.android.com/tools" tools:ignore="MissingTranslation">
     <!-- App name part -->
-    <string name="app_name">MojoLauncher (Minecraft: Java Edition para Android)</string>
-    <string name="app_short_name">MojoLauncher</string>
+    <string name="app_name">Cobblemon Realms</string>
+    <string name="app_short_name">Cobblemon Realms</string>
     <!-- Action bar part -->
     <!-- Languages list part -->
     <!-- Login strings -->
@@ -25,6 +25,8 @@
     -->
     <!-- MCLauncherActivity: Tabs -->
     <string name="mcl_tab_wiki">Wiki</string>
+    <string name="mcl_tab_store">Loja</string>
+    <string name="mcl_tab_site">Site</string>
     <!-- MCLauncherActivity: Account status -->
     <!-- MCLauncherActivity: Strings -->
     <string name="mcl_launch_cleancache">A limpar os ficheiros em cache</string>
@@ -190,4 +192,8 @@
     <string name="preference_category_java_tweaks">Ajustes do Java</string>
     <string name="preference_category_miscellaneous">Definições diversas</string>
     <string name="controller_button_select">Selecionar</string>
+
+    <!-- License -->
+    <string name="license_title">Licença</string>
+    <string name="license_text">Este software está licenciado sob a licença LGPL-3.0.</string>
 </resources>

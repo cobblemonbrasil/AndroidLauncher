@@ -85,11 +85,10 @@ public final class Tools {
     public static final String MAVEN_CENTRAL = "https://maven-central-eu.storage-download.googleapis.com/maven2/";
     public  static final float BYTE_TO_MB = 1024 * 1024;
     public static final Handler MAIN_HANDLER = new Handler(Looper.getMainLooper());
-    public static String APP_NAME = "PojavLauncher";
+    public static String APP_NAME = "Cobblemon Realms";
 
     public static final Gson GLOBAL_GSON = new GsonBuilder().setPrettyPrinting().create();
 
-    public static final String URL_HOME = "https://pojavlauncherteam.github.io";
     public static String NATIVE_LIB_DIR;
     public static String DIR_DATA; //Initialized later to get context
     public static File DIR_CACHE;
@@ -98,7 +97,7 @@ public final class Tools {
 
     // New since 3.3.1
     public static String DIR_ACCOUNT_NEW;
-    public static String DIR_GAME_HOME = Environment.getExternalStorageDirectory().getAbsolutePath() + "/games/PojavLauncher";
+    public static String DIR_GAME_HOME = Environment.getExternalStorageDirectory().getAbsolutePath() + "/games/Cobblemon_Realms";
     public static String DIR_GAME_NEW;
 
     // New since 2.4.2
@@ -112,12 +111,15 @@ public final class Tools {
     public static String CTRLMAP_PATH;
     public static String CTRLDEF_FILE;
 
+    // Microsft
+    public static final String AZURE_CLIENT_ID = "5455bea6-3a42-4352-9f5a-547f62500eb8";
+    public static final String LOGIN_SCOPE = "XboxLive.SignIn";
 
     private static File getPojavStorageRoot(Context ctx) {
         if(SDK_INT >= 29) {
             return ctx.getExternalFilesDir(null);
         }else{
-            return new File(Environment.getExternalStorageDirectory(),"games/PojavLauncher");
+            return new File(Environment.getExternalStorageDirectory(),"games/CobblemonRealms");
         }
     }
 

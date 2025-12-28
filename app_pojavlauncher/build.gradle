@@ -2,45 +2,32 @@ plugins {
     id 'com.android.application' version '8.11.1'
     id 'de.undercouch.download' version '5.6.0'
     id 'org.ajoberstar.grgit' version '5.3.2'
+    id 'net.nemerosa.versioning' version '3.1.0'
 }
 
 apply from: rootProject.file('gradle/prefab_bypass.gradle')
 
 import de.undercouch.gradle.tasks.download.Download
 
-static def getDate() { return new Date().format('yyyyMMdd') }
+def getVersionCode() {
+    def versionGeneration = 1
 
-static def getDateSeconds() {
-    if (System.getenv("GITHUB_ACTIONS") == "true") {
-        return Integer.parseInt(System.getenv("GITHUB_RUN_NUMBER"))
-    } else {
-        return 172005
-    }
+    def split = rootProject.property("app.version").toString().split("\\.")
+    int major = split[0].toInteger()
+    int minor = split[1].toInteger()
+    int patch = split[2].toInteger()
+
+    return (versionGeneration * 100000000) + (major * 1000000) + (minor * 1000) + patch
 }
 
-def getVersionName = {
-    def currentBranch = grgit.branch.current()
-    def latestCommit = grgit.log(maxCommits: 1)
-    def dateToday = getDate()
-    if(currentBranch == null || latestCommit == null) {
-        return "LOCAL-${dateToday}"
-    }else {
-        def branchName = currentBranch.getName()
-        def commitAbbreviation = latestCommit.abbreviatedId
-        return "hebe-${dateToday}-${commitAbbreviation}-${branchName}"
-    }
+def getVersionName() {
+    return "${rootProject.property("app.version").toString()} (${versioning.info.build})"
 }
 
-def getCFApiKey = {
-    String key = System.getenv("CURSEFORGE_API_KEY")
-    if(key != null) return key
-    File curseforgeKeyFile = new File("./curseforge_key.txt")
-    if(curseforgeKeyFile.canRead() && curseforgeKeyFile.isFile()) {
-        return curseforgeKeyFile.text
-    }
-    logger.warn('BUILD: You have no CurseForge key, the curseforge api will get disabled !')
-    return "DUMMY"
-}
+println("Build Version: ${getVersionName()} (Code: ${getVersionCode()})")
+
+def localProperties = new Properties()
+localProperties.load(new FileInputStream(rootProject.file("local.properties")))
 
 configurations {
     instrumentedClasspath {
@@ -66,21 +53,20 @@ android {
             keyPassword "android"
         }
         googlePlayBuild {
-            storeFile file("mojo_upload.jks")
-            storePassword System.getenv("UPLOAD_KEYSTORE_PASSWORD")
-            keyAlias "key0"
-            keyPassword System.getenv("UPLOAD_KEYSTORE_PASSWORD")
+            storeFile rootProject.file("upload.jks")
+            storePassword System.getenv("UPLOAD_KEYSTORE_PASSWORD") ?: localProperties["upload.keystore.passsword"]
+            keyAlias "upload"
+            keyPassword System.getenv("UPLOAD_KEYSTORE_PASSWORD") ?: localProperties["upload.keystore.passsword"]
         }
     }
 
     defaultConfig {
-        applicationId "git.artdeell.mojo"
+        applicationId "br.com.cobblemonbrasil.androidlauncher"
         minSdkVersion 21
         targetSdkVersion 35
-        versionCode getDateSeconds()
+        versionCode getVersionCode()
         versionName getVersionName()
         multiDexEnabled true //important
-        resValue 'string', 'curseforge_api_key', getCFApiKey()
     }
 
     flavorDimensions  = ["runtime"]
@@ -103,8 +89,8 @@ android {
             shrinkResources false
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
             signingConfig signingConfigs.customDebug
-            resValue 'string', 'application_package', 'git.artdeell.mojo.debug'
-            resValue 'string', 'storageProviderAuthorities', 'git.artdeell.mojo.scoped.gamefolder.debug'
+            resValue 'string', 'application_package', 'br.com.cobblemonbrasil.androidlauncher.debug'
+            resValue 'string', 'storageProviderAuthorities', 'br.com.cobblemonbrasil.androidlauncher.scoped.gamefolder.debug'
         }
         proguard {
             initWith debug
@@ -123,8 +109,8 @@ android {
             // defaultConfig already set
             // multiDexEnabled = true
             // debuggable = true
-            resValue 'string', 'storageProviderAuthorities', 'git.artdeell.mojo.scoped.gamefolder'
-            resValue 'string', 'application_package', 'git.artdeell.mojo'
+            resValue 'string', 'storageProviderAuthorities', 'br.com.cobblemonbrasil.androidlauncher.scoped.gamefolder'
+            resValue 'string', 'application_package', 'br.com.cobblemonbrasil.androidlauncher'
         }
         gplay {
             initWith release

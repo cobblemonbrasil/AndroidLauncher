@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources xmlns:tools="http://schemas.android.com/tools" tools:ignore="MissingTranslation">
     <!-- App name part -->
-    <string name="app_name">MojoLauncher (Minecraft: Java Edition para Android)</string>
-    <string name="app_short_name">MojoLauncher</string>
+    <string name="app_name">Cobblemon Realms</string>
+    <string name="app_short_name">Cobblemon Realms</string>
     <!-- Action bar part -->
     <!-- Languages list part -->
     <!-- Login strings -->
@@ -27,6 +27,8 @@
     -->
     <!-- MCLauncherActivity: Tabs -->
     <string name="mcl_tab_wiki">Guia</string>
+    <string name="mcl_tab_store">Loja</string>
+    <string name="mcl_tab_site">Site</string>
     <!-- MCLauncherActivity: Account status -->
     <!-- MCLauncherActivity: Strings -->
     <string name="mcl_launch_cleancache">Limpando arquivos em cache</string>
@@ -233,6 +235,8 @@
     <string name="preference_gyro_sample_rate_title">Taxa de amostragem do giroscópio</string>
     <string name="preference_gyro_sample_rate_description">Se você tiver problemas de desempenho com os controles por giroscópio, aumente isto.</string>
     <string name="microsoft_login_retry_later">Você fez muitas solicitações. Por favor, tente novamente mais tarde.</string>
+    <string name="auth_select_microsoft">Conta Microsft</string>
+    <string name="auth_select_local">Conta Local</string>
     <string name="storage_required">O MojoLauncher requer que o armazenamento externo seja conectado. Por favor, reconecte-o e reinicie o aplicativo.</string>
     <string name="mcl_setting_title_buttonallcaps">Somente use letras maiúsculas em rótulos de botões</string>
     <string name="mcl_setting_subtitle_buttonallcaps">Desative isso se você quiser usar letras minúsculas em seus controles.</string>
@@ -366,4 +370,8 @@
     <string name="local_login_bad_username_title">Nome de usuário inadequado</string>
     <string name="local_login_bad_username_text">O nome de usuário deve ter entre 3 a 16 caracteres, deve conter somente letras latinas, número de 0 a 9 e sublinhados.</string>
     <string name="quick_setting_title">Configurações rápidas</string>
+
+    <!-- License -->
+    <string name="license_title">Licença</string>
+    <string name="license_text">Este software está licenciado sob a licença LGPL-3.0.</string>
 </resources>

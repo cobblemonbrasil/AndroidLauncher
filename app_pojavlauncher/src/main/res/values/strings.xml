@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources xmlns:tools="http://schemas.android.com/tools" tools:ignore="MissingTranslation">
     <!-- App name part -->
-    <string name="app_name">MojoLauncher (Minecraft: Java Edition for Android)</string>
-    <string name="app_short_name">MojoLauncher</string>
+    <string name="app_name">Cobblemon Realms</string>
+    <string name="app_short_name">Cobblemon Realms</string>
 
     <!-- Action bar part -->
 
@@ -36,7 +36,8 @@
 
     <!-- MCLauncherActivity: Tabs -->
     <string name="mcl_tab_wiki">Wiki</string>
-
+    <string name="mcl_tab_store">Store</string>
+    <string name="mcl_tab_site">Site</string>
     <!-- MCLauncherActivity: Account status -->
 
     <!-- MCLauncherActivity: Strings -->
@@ -428,8 +429,11 @@
     <string name="preference_remap_controller_description">Allows you to modify the keyboard keys bound to each controller button</string>
     <string name="mcl_button_social_media">Discord</string>
     <string name="ltw_render_distance_warning_msg">Your GPU is not capable of rendering above 7 render distance without Sodium or other similar mods. The render distance will be automatically reduced when you click "OK".</string>
-    <string name="mcl_button_open_directory">Open game directory</string>
-    <string name="social_media_invite" translatable="false">https://discord.gg/VHdwQFsaGX</string>
+    <string name="mcl_button_open_directory">Open game directory</string>]
+    <string name="site_url" translatable="false">https://cobblemonrealms.com.br</string>
+    <string name="store_url" translatable="false">https://loja.cobblemonrealms.com.br</string>
+    <string name="news_url" translatable="false">https://cobblemonrealms.com.br/docs/wiki/instalacao/android/instalacao</string>
+    <string name="social_media_invite" translatable="false">https://discord.cobblemonrealms.com.br</string>
     <string name="local_login_bad_username_title">Unsuitable username</string>
     <string name="local_login_bad_username_text">The username must be between 3–16 characters long, and must only contain latin letters, numbers 0–9 and underscores.</string>
     <string name="quick_setting_title">Quick settings</string>
@@ -443,7 +447,6 @@
     <string name="oauth_unknown_error">Unknown authentication error</string>
     <string name="oauth_web_complete">Authenticating…</string>
     <string name="auth_select_microsoft">Microsoft account</string>
-    <string name="auth_select_elyby">Ely.by account</string>
     <string name="auth_select_local">Local account</string>
     <string name="instance_dir_missing">Instance is missing</string>
     <string name="gamedir_open_failed">Failed to open game directory</string>
@@ -471,4 +474,8 @@
     <string name="vml_err_exists">The VM is already loaded</string>
     <string name="vml_err_inval">Bad arguments</string>
     <string name="gr_err_renderer_load_Failed">Failed to load renderer library</string>
+
+    <!-- License -->
+    <string name="license_title">License</string>
+    <string name="license_text">This software is licensed under the LGPL-3.0 license.</string>
 </resources>

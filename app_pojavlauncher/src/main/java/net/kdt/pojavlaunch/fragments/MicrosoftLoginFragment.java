@@ -1,16 +1,28 @@
 package net.kdt.pojavlaunch.fragments;
 
+import net.kdt.pojavlaunch.Tools;
+import net.kdt.pojavlaunch.authenticator.impl.CommonLoginUtils;
 import net.kdt.pojavlaunch.extra.ExtraConstants;
+
+import java.io.UnsupportedEncodingException;
 
 public class MicrosoftLoginFragment extends OAuthFragment {
     public static final String TAG = "MICROSOFT_LOGIN_FRAGMENT";
+
     public MicrosoftLoginFragment() {
-        super("ms-xal-00000000402b5328",
-                "https://login.live.com/oauth20_authorize.srf" +
-                        "?client_id=00000000402b5328" +
-                        "&response_type=code" +
-                        "&scope=service%3A%3Auser.auth.xboxlive.com%3A%3AMBI_SSL" +
-                        "&redirect_url=https%3A%2F%2Flogin.live.com%2Foauth20_desktop.srf",
-                ExtraConstants.MICROSOFT_LOGIN_TODO);
+        super("https://login.live.com/oauth20_desktop.srf", formattedUrl(), ExtraConstants.MICROSOFT_LOGIN_TODO);
+    }
+
+    private static String formattedUrl() {
+        try {
+            return "https://login.live.com/oauth20_authorize.srf?" + CommonLoginUtils.convertToFormData(
+                    "client_id", Tools.AZURE_CLIENT_ID,
+                    "response_type", "code",
+                    "redirect_url", "https://login.live.com/oauth20_desktop.srf",
+                    "scope", Tools.LOGIN_SCOPE
+            );
+        } catch (UnsupportedEncodingException e) {
+            throw new RuntimeException(e);
+        }
     }
 }

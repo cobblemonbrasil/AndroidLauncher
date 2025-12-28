@@ -61,7 +61,7 @@ public class SearchModFragment extends Fragment implements ModItemAdapter.Search
     @Override
     public void onAttach(@NonNull Context context) {
         super.onAttach(context);
-        modpackApi = new CommonApi(context.getString(R.string.curseforge_api_key));
+        modpackApi = new CommonApi("");
     }
 
     @Override
