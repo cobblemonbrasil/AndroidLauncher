@@ -257,7 +257,7 @@ public class GameRunner {
                     forgeSplashContent = Tools.read(forgeSplashFile.getAbsolutePath());
                 }
                 if (forgeSplashContent.contains("enabled=true")) {
-                    Tools.write(forgeSplashFile.getAbsolutePath(),
+                    Tools.write(forgeSplashFile,
                             forgeSplashContent.replace("enabled=true", "enabled=false"));
                 }
             } catch (IOException e) {

@@ -511,12 +511,14 @@ public final class Tools {
         return read(new FileInputStream(path));
     }
 
-    public static void write(String path, String content) throws IOException {
-        File file = new File(path);
-        FileUtils.ensureParentDirectory(file);
-        try(FileOutputStream outStream = new FileOutputStream(file)) {
-            IOUtils.write(content, outStream);
+    public static void write(File path, String content) throws IOException {
+        FileUtils.ensureParentDirectory(path);
+        try (FileOutputStream fileOutputStream = new FileOutputStream(path)){
+            IOUtils.write(content, fileOutputStream);
         }
+    }
+    public static void write(String path, String content) throws IOException {
+        write(new File(path), content);
     }
 
     public static boolean isAndroid8OrHigher() {
