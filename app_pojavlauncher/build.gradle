@@ -288,8 +288,6 @@ afterEvaluate {
 
 		if (variant.getName().toLowerCase().contains("full")) {
             registrar.jreRuntimeDependency 8, "components/jre"
-            registrar.jreRuntimeDependency 17, "components/jre-new"
-            registrar.jreRuntimeDependency 25, "components/jre-25"
         }
         
 		def cacioJarUrl = "https://jitpack.io/com/github/MojoLauncher/%1\$s/%2\$s/%3\$s/%2\$s-%3\$s%4\$s.jar"
