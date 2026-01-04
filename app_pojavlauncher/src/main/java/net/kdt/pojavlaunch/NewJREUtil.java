@@ -32,10 +32,21 @@ public class NewJREUtil {
     private static String getRemoteRuntimeVersion(InternalRuntime internalRuntime) throws IOException{
         return DownloadUtils.downloadString(DOWNLOAD_URL+internalRuntime.path+"/version");
     }
-    
+
+    private static boolean checkLastUpdateTime(InternalRuntime internalRuntime) {
+        long lastUpdateTime = MultiRTUtils.readLastUpdateTime(internalRuntime.name);
+        long currentTime = System.currentTimeMillis() / 1000L;
+        return lastUpdateTime != -1 && currentTime - lastUpdateTime < 259200;
+    }
+
+    private static void writeLastUpdateTime(InternalRuntime internalRuntime) {
+        MultiRTUtils.writeLastUpdateTime(internalRuntime.name, System.currentTimeMillis() / 1000L);
+    }
+
     private static void checkInternalRuntime(AssetManager assetManager, InternalRuntime internalRuntime) throws RuntimeSelectionException {
         String remote_runtime_version;
         String installed_runtime_version = MultiRTUtils.readInternalRuntimeVersion(internalRuntime.name);
+        if(installed_runtime_version != null && checkLastUpdateTime(internalRuntime)) return;
         try {
             remote_runtime_version = getRemoteRuntimeVersion(internalRuntime);
         }catch (IOException exc) {
@@ -48,6 +59,7 @@ public class NewJREUtil {
         }
         // this implicitly checks for null, so it will unpack the runtime even if we don't have one installed
         if(!remote_runtime_version.equals(installed_runtime_version)) unpackInternalRuntime(assetManager, internalRuntime, remote_runtime_version);
+        writeLastUpdateTime(internalRuntime);
     }
 
     private static class RuntimeDownloaderVerifier {
