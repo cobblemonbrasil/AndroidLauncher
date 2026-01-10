@@ -273,8 +273,8 @@ afterEvaluate {
         registrar.projectJarDependency project(":jre_lwjgl3glfw"), "components/lwjgl3"
 
 		if (variant.getName().toLowerCase().contains("full")) {
-            registrar.jreRuntimeDependency 8, "components/jre"
-            registrar.jreRuntimeDependency 17, "components/jre-new"
+//            registrar.jreRuntimeDependency 8, "components/jre"
+//            registrar.jreRuntimeDependency 17, "components/jre-new"
             registrar.jreRuntimeDependency 21, "components/jre-21"
         }
         
