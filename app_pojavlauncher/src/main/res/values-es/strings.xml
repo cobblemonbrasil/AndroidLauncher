@@ -358,5 +358,8 @@
 
     <!-- License -->
     <string name="license_title">Licencia</string>
+    <string name="license_subtitle">Haga clic para ver más</string>
     <string name="license_text">Este software está licenciado bajo la licencia LGPL-3.0.</string>
+    <string name="license_open_license">Licencia abierta</string>
+    <string name="license_open_github">GitHub abierta</string>
 </resources>

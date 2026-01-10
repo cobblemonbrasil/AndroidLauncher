@@ -477,5 +477,8 @@
 
     <!-- License -->
     <string name="license_title">License</string>
+    <string name="license_subtitle">Click to see more</string>
     <string name="license_text">This software is licensed under the LGPL-3.0 license.</string>
+    <string name="license_open_github">Open GitHub</string>
+    <string name="license_open_license">Open License</string>
 </resources>

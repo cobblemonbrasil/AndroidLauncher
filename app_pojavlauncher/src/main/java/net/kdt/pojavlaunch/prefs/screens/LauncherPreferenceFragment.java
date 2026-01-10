@@ -1,18 +1,25 @@
 package net.kdt.pojavlaunch.prefs.screens;
 
 
+import static net.kdt.pojavlaunch.Tools.shareLog;
+
 import android.app.Activity;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.app.AlertDialog;
 import androidx.preference.Preference;
 import androidx.preference.PreferenceFragmentCompat;
 
+import net.kdt.pojavlaunch.ExitActivity;
 import net.kdt.pojavlaunch.LauncherActivity;
 import git.artdeell.mojo.R;
+
+import net.kdt.pojavlaunch.Tools;
 import net.kdt.pojavlaunch.prefs.LauncherPreferences;
 
 /**
@@ -36,6 +43,7 @@ public class LauncherPreferenceFragment extends PreferenceFragmentCompat impleme
     private void setupNotificationRequestPreference() {
         Preference mRequestNotificationPermissionPreference = requirePreference("notification_permission_request");
         Activity activity = getActivity();
+
         if(activity instanceof LauncherActivity) {
             LauncherActivity launcherActivity = (LauncherActivity)activity;
             mRequestNotificationPermissionPreference.setVisible(!launcherActivity.checkForNotificationPermission());
@@ -46,6 +54,16 @@ public class LauncherPreferenceFragment extends PreferenceFragmentCompat impleme
         }else{
             mRequestNotificationPermissionPreference.setVisible(false);
         }
+        Preference license = requirePreference("license");
+        license.setOnPreferenceClickListener(preference -> {
+            new AlertDialog.Builder(requireContext())
+                    .setMessage(R.string.license_text)
+                    .setNeutralButton(R.string.license_open_license,  (dialog, which) -> Tools.openURL(requireActivity(), "https://github.com/cobblemonbrasil/AndroidLauncher/blob/main/LICENSE"))
+                    .setNegativeButton(R.string.license_open_github, (dialog, which) -> Tools.openURL(requireActivity(), "https://github.com/cobblemonbrasil/AndroidLauncher"))
+                    .setPositiveButton("Ok", (dialogInterface, i) -> dialogInterface.cancel())
+                    .show();
+            return true;
+        });
     }
 
     @Override
