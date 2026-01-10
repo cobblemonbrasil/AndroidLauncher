@@ -58,7 +58,7 @@ public class LauncherPreferenceFragment extends PreferenceFragmentCompat impleme
         license.setOnPreferenceClickListener(preference -> {
             new AlertDialog.Builder(requireContext())
                     .setMessage(R.string.license_text)
-                    .setNeutralButton(R.string.license_open_license,  (dialog, which) -> Tools.openURL(requireActivity(), "https://github.com/cobblemonbrasil/AndroidLauncher/blob/main/LICENSE"))
+                    .setNeutralButton("MojoLauncher",  (dialog, which) -> Tools.openURL(requireActivity(), "https://github.com/MojoLauncher/MojoLauncher"))
                     .setNegativeButton(R.string.license_open_github, (dialog, which) -> Tools.openURL(requireActivity(), "https://github.com/cobblemonbrasil/AndroidLauncher"))
                     .setPositiveButton("Ok", (dialogInterface, i) -> dialogInterface.cancel())
                     .show();
