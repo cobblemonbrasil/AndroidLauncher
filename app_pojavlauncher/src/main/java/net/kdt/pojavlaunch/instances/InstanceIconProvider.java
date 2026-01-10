@@ -9,7 +9,7 @@ import android.graphics.drawable.Drawable;
 import androidx.annotation.NonNull;
 import androidx.core.content.res.ResourcesCompat;
 
-import git.artdeell.mojo.R;
+import br.com.cobblemonbrasil.androidlauncher.R;
 
 import java.io.File;
 import java.util.HashMap;

@@ -6,7 +6,7 @@ import android.content.Context;
 import com.kdt.mcgui.ProgressLayout;
 
 import net.kdt.pojavlaunch.PojavApplication;
-import git.artdeell.mojo.R;
+import br.com.cobblemonbrasil.androidlauncher.R;
 import net.kdt.pojavlaunch.Tools;
 import net.kdt.pojavlaunch.modloaders.modpacks.api.instances.ModpackInstanceProvider;
 import net.kdt.pojavlaunch.modloaders.modpacks.models.ModDetail;

@@ -37,7 +37,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
-import git.artdeell.mojo.R;
+import br.com.cobblemonbrasil.androidlauncher.R;
 
 public class GameRunner {
     /**

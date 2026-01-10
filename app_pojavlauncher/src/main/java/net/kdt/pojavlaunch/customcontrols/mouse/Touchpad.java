@@ -17,7 +17,7 @@ import net.kdt.pojavlaunch.prefs.LauncherPreferences;
 
 import org.lwjgl.glfw.CallbackBridge;
 
-import git.artdeell.mojo.R;
+import br.com.cobblemonbrasil.androidlauncher.R;
 
 /**
  * Class dealing with the virtual mouse

@@ -27,7 +27,7 @@ import java.util.List;
 import java.util.Locale;
 import java.util.concurrent.Callable;
 
-import git.artdeell.mojo.R;
+import br.com.cobblemonbrasil.androidlauncher.R;
 
 public class ModpackInstaller {
 

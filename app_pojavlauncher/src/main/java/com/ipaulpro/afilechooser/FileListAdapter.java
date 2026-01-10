@@ -23,7 +23,7 @@ import java.io.*;
 import java.util.*;
 import net.kdt.pojavlaunch.*;
 
-import git.artdeell.mojo.R;
+import br.com.cobblemonbrasil.androidlauncher.R;
 
 /**
  * List adapter for Files.

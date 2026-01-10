@@ -17,7 +17,7 @@ import androidx.preference.PreferenceFragmentCompat;
 
 import net.kdt.pojavlaunch.ExitActivity;
 import net.kdt.pojavlaunch.LauncherActivity;
-import git.artdeell.mojo.R;
+import br.com.cobblemonbrasil.androidlauncher.R;
 
 import net.kdt.pojavlaunch.Tools;
 import net.kdt.pojavlaunch.prefs.LauncherPreferences;

@@ -9,7 +9,7 @@ import android.widget.ExpandableListView;
 import androidx.appcompat.app.AlertDialog;
 
 import net.kdt.pojavlaunch.JMinecraftVersionList;
-import git.artdeell.mojo.R;
+import br.com.cobblemonbrasil.androidlauncher.R;
 import net.kdt.pojavlaunch.extra.ExtraConstants;
 
 public class VersionSelectorDialog {

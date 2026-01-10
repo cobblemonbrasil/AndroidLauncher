@@ -5,7 +5,7 @@ import android.os.Bundle;
 
 import androidx.preference.Preference;
 
-import git.artdeell.mojo.R;
+import br.com.cobblemonbrasil.androidlauncher.R;
 
 import net.kdt.pojavlaunch.utils.GLInfoUtils;
 import net.kdt.pojavlaunch.utils.RendererCompatUtil;

@@ -4,7 +4,7 @@ import com.google.gson.annotations.SerializedName;
 
 import net.kdt.pojavlaunch.authenticator.impl.MicrosoftBackgroundLogin;
 
-import git.artdeell.mojo.R;
+import br.com.cobblemonbrasil.androidlauncher.R;
 
 public enum AuthType {
     @SerializedName("microsoft")

@@ -27,7 +27,7 @@ import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 
-import git.artdeell.mojo.BuildConfig;
+import br.com.cobblemonbrasil.androidlauncher.BuildConfig;
 
 public class PojavApplication extends Application {
 	public static final String CRASH_REPORT_TAG = "PojavCrashReport";

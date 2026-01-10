@@ -16,7 +16,7 @@ import java.io.IOException;
 import java.util.Arrays;
 import java.util.List;
 
-import git.artdeell.mojo.R;
+import br.com.cobblemonbrasil.androidlauncher.R;
 
 public class NewJREUtil {
     private static boolean checkInternalRuntime(AssetManager assetManager, InternalRuntime internalRuntime) {
