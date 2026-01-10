@@ -21,9 +21,11 @@ public class Instance {
     public static final String VERSION_LATEST_RELEASE = "latest_release";
     public static final String VERSION_LATEST_SNAPSHOT = "latest_snapshot";
 
-    protected transient File mInstanceRoot;
+    public transient File mInstanceRoot;
     public String name;
     public String versionId;
+    // Used on modpack instances to differ versions for auto-update
+    public String modpackVersionId;
     public InstanceInstaller installer;
     public String renderer;
     public String jvmArgs;
@@ -33,7 +35,7 @@ public class Instance {
     public String icon;
     public boolean sharedData;
 
-    protected Instance() {
+    public Instance() {
     }
 
     protected void sanitize() {

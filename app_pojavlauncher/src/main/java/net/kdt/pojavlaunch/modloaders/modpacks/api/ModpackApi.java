@@ -8,6 +8,7 @@ import com.kdt.mcgui.ProgressLayout;
 import net.kdt.pojavlaunch.PojavApplication;
 import git.artdeell.mojo.R;
 import net.kdt.pojavlaunch.Tools;
+import net.kdt.pojavlaunch.modloaders.modpacks.api.instances.ModpackInstanceProvider;
 import net.kdt.pojavlaunch.modloaders.modpacks.models.ModDetail;
 import net.kdt.pojavlaunch.modloaders.modpacks.models.ModItem;
 import net.kdt.pojavlaunch.modloaders.modpacks.models.SearchFilters;
@@ -47,13 +48,14 @@ public interface ModpackApi {
      * @param modDetail The mod detail data
      * @param selectedVersion The selected version
      */
-    default void handleModpackInstallation(Context context, ModDetail modDetail, int selectedVersion) {
+    default void handleModpackInstallation(Context context, ModDetail modDetail, int selectedVersion, ModpackInstanceProvider instanceProvider, Runnable runAfter) {
         // Doing this here since when starting installation, the progress does not start immediately
         // which may lead to two concurrent installations (very bad)
         ProgressLayout.setProgress(ProgressLayout.INSTALL_MODPACK, 0, R.string.global_waiting);
         PojavApplication.sExecutorService.execute(() -> {
             try {
-                installModpack(modDetail, selectedVersion);
+                installModpack(modDetail, selectedVersion, instanceProvider);
+                runAfter.run();
             }catch (IOException e) {
                 Tools.showErrorRemote(context, R.string.modpack_install_download_failed, e);
             }
@@ -64,8 +66,10 @@ public interface ModpackApi {
      * Install the mod(pack).
      * May require the download of additional files.
      * May requires launching the installation of a modloader
-     * @param modDetail The mod detail data
-     * @param selectedVersion The selected version
+     *
+     * @param modDetail        The mod detail data
+     * @param selectedVersion  The selected version
+     * @param creator          The  creator of instance to install modpack
      */
-    ModLoader installModpack(ModDetail modDetail, int selectedVersion) throws IOException;
+    ModLoader installModpack(ModDetail modDetail, int selectedVersion, ModpackInstanceProvider creator) throws IOException;
 }

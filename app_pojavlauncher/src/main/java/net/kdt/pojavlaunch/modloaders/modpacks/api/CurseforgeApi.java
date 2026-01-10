@@ -14,6 +14,8 @@ import net.kdt.pojavlaunch.Tools;
 import net.kdt.pojavlaunch.downloader.AcquireableTaskMetadata;
 import net.kdt.pojavlaunch.downloader.Downloader;
 import net.kdt.pojavlaunch.mirrors.DownloadMirror;
+import net.kdt.pojavlaunch.modloaders.modpacks.api.autoupdate.InstalledModpack;
+import net.kdt.pojavlaunch.modloaders.modpacks.api.instances.ModpackInstanceProvider;
 import net.kdt.pojavlaunch.modloaders.modpacks.models.Constants;
 import net.kdt.pojavlaunch.modloaders.modpacks.models.CurseManifest;
 import net.kdt.pojavlaunch.modloaders.modpacks.models.ModDetail;
@@ -29,7 +31,9 @@ import java.io.IOException;
 import java.net.URL;
 import java.net.URLDecoder;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
+import java.util.List;
 import java.util.regex.Pattern;
 import java.util.zip.ZipFile;
 
@@ -131,13 +135,13 @@ public class CurseforgeApi implements ModpackApi{
 
             hashes[i] = getSha1FromModData(modDetail);
         }
-        return new ModDetail(item, versionNames, mcVersionNames, versionUrls, hashes);
+        return new ModDetail(item, versionNames, mcVersionNames, versionUrls, new String[] {}, hashes);
     }
 
     @Override
-    public ModLoader installModpack(ModDetail modDetail, int selectedVersion) throws IOException{
+    public ModLoader installModpack(ModDetail modDetail, int selectedVersion, ModpackInstanceProvider instanceProvider) throws IOException{
         //TODO considering only modpacks for now
-        return ModpackInstaller.installModpack(modDetail, selectedVersion, this::installCurseforgeZip);
+        return ModpackInstaller.installModpack(modDetail, selectedVersion, this::installCurseforgeZip, instanceProvider);
     }
 
 
@@ -163,7 +167,7 @@ public class CurseforgeApi implements ModpackApi{
         return index + data.size();
     }
 
-    private ModLoader installCurseforgeZip(File zipFile, File instanceDestination) throws IOException {
+    private InstalledModpack installCurseforgeZip(File zipFile, File instanceDestination, List<String> ignoredFiles) throws IOException {
         try (ZipFile modpackZipFile = new ZipFile(zipFile)){
             CurseManifest curseManifest = Tools.GLOBAL_GSON.fromJson(
                     Tools.read(ZipUtils.getEntryStream(modpackZipFile, "manifest.json")),
@@ -180,7 +184,7 @@ public class CurseforgeApi implements ModpackApi{
             String overridesDir = "overrides";
             if(curseManifest.overrides != null) overridesDir = curseManifest.overrides;
             ZipUtils.zipExtract(modpackZipFile, overridesDir, instanceDestination);
-            return createInfo(curseManifest.minecraft);
+            return new InstalledModpack(createInfo(curseManifest.minecraft), Collections.emptyList());
         }
     }
 

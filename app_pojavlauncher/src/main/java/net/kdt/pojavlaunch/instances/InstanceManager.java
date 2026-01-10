@@ -3,6 +3,7 @@ package net.kdt.pojavlaunch.instances;
 import com.google.gson.JsonSyntaxException;
 
 import net.kdt.pojavlaunch.Tools;
+import net.kdt.pojavlaunch.modloaders.modpacks.CustomModpack;
 import net.kdt.pojavlaunch.prefs.LauncherPreferences;
 import net.kdt.pojavlaunch.utils.FileUtils;
 import net.kdt.pojavlaunch.utils.JSONUtils;
@@ -16,12 +17,12 @@ import java.util.UUID;
 
 public class InstanceManager {
     private static boolean sIsLoaded;
-    private static final File sInstancePath = new File(Tools.DIR_GAME_HOME, "instances");
+    public static final File sInstancePath = new File(Tools.DIR_GAME_HOME, "instances");
     public static final File SHARED_DATA_DIRECTORY = new File(Tools.DIR_GAME_HOME, "shared_dir");
     private static Instance sSelectedInstance;
     private static ArrayList<Instance> sInstanceList;
 
-    private static Instance read(File instanceRoot) {
+    public static Instance read(File instanceRoot) {
         try {
             Instance instance = JSONUtils.readFromFile(metadataLocation(instanceRoot), Instance.class);
             instance.mInstanceRoot = instanceRoot;
@@ -117,8 +118,9 @@ public class InstanceManager {
      * using loadSelectedInstance()
      */
     public static Instance getSelectedListedInstance() {
-        load();
-        return sSelectedInstance;
+//        load();
+//        return sSelectedInstance;
+        return CustomModpack.getInstance();
     }
 
     /**
@@ -204,8 +206,9 @@ public class InstanceManager {
      * @return currently selected instance
      */
     public static Instance loadSelectedInstance() {
-        if(sIsLoaded) return sSelectedInstance;
-        File selectedInstanceLocation = selectedInstanceLocation();
-        return read(selectedInstanceLocation);
+//        if(sIsLoaded) return sSelectedInstance;
+//        File selectedInstanceLocation = selectedInstanceLocation();
+//        return read(selectedInstanceLocation);
+        return CustomModpack.getInstance();
     }
 }
