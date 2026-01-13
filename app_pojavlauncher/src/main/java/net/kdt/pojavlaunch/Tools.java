@@ -41,6 +41,7 @@ import androidx.appcompat.app.AlertDialog;
 import androidx.core.app.NotificationManagerCompat;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentActivity;
+import androidx.fragment.app.FragmentManager;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -115,12 +116,15 @@ public final class Tools {
     public static final String AZURE_CLIENT_ID = "5455bea6-3a42-4352-9f5a-547f62500eb8";
     public static final String LOGIN_SCOPE = "XboxLive.SignIn";
 
-    private static File getPojavStorageRoot(Context ctx) {
+    private static @Nullable File getPojavStorageRoot(Context ctx) {
         if(SDK_INT >= 29) {
             return ctx.getExternalFilesDir(null);
-        }else{
-            return new File(Environment.getExternalStorageDirectory(),"games/CobblemonRealms");
         }
+        File externalStorageDirectory = Environment.getExternalStorageDirectory();
+        if(externalStorageDirectory == null) return null;
+        File launcherRoot = new File(externalStorageDirectory,"games/CobblemonRealmsLauncher");
+        if(!Environment.MEDIA_MOUNTED.equals(Environment.getExternalStorageState(launcherRoot))) return null;
+        return launcherRoot;
     }
 
     /**
@@ -129,9 +133,7 @@ public final class Tools {
      * @return true if storage is fine, false if storage is not accessible
      */
     public static boolean checkStorageRoot(Context context) {
-        File externalFilesDir = DIR_GAME_HOME  == null ? Tools.getPojavStorageRoot(context) : new File(DIR_GAME_HOME);
-        //externalFilesDir == null when the storage is not mounted if it was obtained with the context call
-        return externalFilesDir != null && Environment.getExternalStorageState(externalFilesDir).equals(Environment.MEDIA_MOUNTED);
+        return getPojavStorageRoot(context) != null;
     }
 
     /**
@@ -171,7 +173,9 @@ public final class Tools {
      */
     public static void initStorageConstants(Context ctx){
         initEarlyConstants(ctx);
-        DIR_GAME_HOME = getPojavStorageRoot(ctx).getAbsolutePath();
+        File pojavStorageRoot = getPojavStorageRoot(ctx);
+        if(pojavStorageRoot == null) throw new RuntimeException("Whoops! You have to put the SD into your phone.");
+        DIR_GAME_HOME = pojavStorageRoot.getAbsolutePath();
         DIR_GAME_NEW = DIR_GAME_HOME + "/.minecraft";
         DIR_HOME_VERSION = DIR_GAME_NEW + "/versions";
         DIR_HOME_LIBRARY = DIR_GAME_NEW + "/libraries";
@@ -462,6 +466,7 @@ public final class Tools {
                 libItem.downloads.artifact.sha1 = "1200e7ebeedbe0d10062093f32925a912020e747";
                 libItem.downloads.artifact.url = MAVEN_CENTRAL+"net/java/dev/jna/jna/5.13.0/jna-5.13.0.jar";
                 libItem.downloads.artifact.size = 1879325;
+                libItem.replaced = true;
             } else if (libItem.name.startsWith("com.github.oshi:oshi-core:")) {
                 //if (Integer.parseInt(version[0]) >= 6 && Integer.parseInt(version[1]) >= 3) return;
                 // FIXME: ensure compatibility
@@ -475,6 +480,7 @@ public final class Tools {
                 libItem.downloads.artifact.sha1 = "9e98cf55be371cafdb9c70c35d04ec2a8c2b42ac";
                 libItem.downloads.artifact.url = MAVEN_CENTRAL+"com/github/oshi/oshi-core/6.3.0/oshi-core-6.3.0.jar";
                 libItem.downloads.artifact.size = 957945;
+                libItem.replaced = true;
             } else if (libItem.name.startsWith("org.ow2.asm:asm-all:")) {
                 // Early versions of the ASM library get repalced with 5.0.4 because Pojav's LWJGL is compiled for
                 // Java 8, which is not supported by old ASM versions. Mod loaders like Forge, which depend on this
@@ -488,6 +494,7 @@ public final class Tools {
                 libItem.downloads.artifact.sha1 = "e6244859997b3d4237a552669279780876228909";
                 libItem.downloads.artifact.url = MAVEN_CENTRAL+"org/ow2/asm/asm-all/5.0.4/asm-all-5.0.4.jar";
                 libItem.downloads.artifact.size = 241810;
+                libItem.replaced = true;
             }
         }
     }
@@ -506,12 +513,14 @@ public final class Tools {
         return read(new FileInputStream(path));
     }
 
-    public static void write(String path, String content) throws IOException {
-        File file = new File(path);
-        FileUtils.ensureParentDirectory(file);
-        try(FileOutputStream outStream = new FileOutputStream(file)) {
-            IOUtils.write(content, outStream);
+    public static void write(File path, String content) throws IOException {
+        FileUtils.ensureParentDirectory(path);
+        try (FileOutputStream fileOutputStream = new FileOutputStream(path)){
+            IOUtils.write(content, fileOutputStream);
         }
+    }
+    public static void write(String path, String content) throws IOException {
+        write(new File(path), content);
     }
 
     public static boolean isAndroid8OrHigher() {
@@ -712,14 +721,17 @@ public final class Tools {
     }
 
     public static String getFileName(Context ctx, Uri uri) {
-        Cursor c = ctx.getContentResolver().query(uri, null, null, null, null);
-        if(c == null) return uri.getLastPathSegment(); // idk myself but it happens on asus file manager
-        c.moveToFirst();
-        int columnIndex = c.getColumnIndex(OpenableColumns.DISPLAY_NAME);
-        if(columnIndex == -1) return uri.getLastPathSegment();
-        String fileName = c.getString(columnIndex);
-        c.close();
-        return fileName;
+        try(Cursor c = ctx.getContentResolver().query(uri, null, null, null, null)) {
+            if(c == null) return uri.getLastPathSegment(); // idk myself but it happens on asus file manager
+            if(!c.moveToFirst()) return uri.getLastPathSegment();
+            int columnIndex = c.getColumnIndex(OpenableColumns.DISPLAY_NAME);
+            if(columnIndex == -1) return uri.getLastPathSegment();
+            return c.getString(columnIndex);
+        } catch (Exception e) {
+            // Turns out that the content resolver can throw you literally anything if the underlying provider crashes
+            // Fall back in that case
+            return uri.getLastPathSegment();
+        }
     }
 
     /** Swap the main fragment with another */
@@ -734,8 +746,8 @@ public final class Tools {
     }
 
     public static void backToMainMenu(FragmentActivity fragmentActivity) {
-        fragmentActivity.getSupportFragmentManager()
-                .popBackStack("ROOT", 0);
+        fragmentActivity.getSupportFragmentManager().popBackStack(null, FragmentManager.POP_BACK_STACK_INCLUSIVE);
+
     }
 
     /** Remove the current fragment */

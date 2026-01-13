@@ -2,7 +2,7 @@ package net.kdt.pojavlaunch.modloaders.modpacks;
 
 import net.kdt.pojavlaunch.Tools;
 import net.kdt.pojavlaunch.instances.Instance;
-import net.kdt.pojavlaunch.instances.InstanceManager;
+import net.kdt.pojavlaunch.instances.Instances;
 import net.kdt.pojavlaunch.modloaders.modpacks.api.ModpackInfo;
 import net.kdt.pojavlaunch.modloaders.modpacks.api.ModrinthApi;
 import net.kdt.pojavlaunch.modloaders.modpacks.models.ModDetail;
@@ -29,7 +29,7 @@ public class CustomModpack {
             return;
         }
         if (INSTANCE_DIR.exists()) {
-            instance = InstanceManager.read(INSTANCE_DIR);
+            instance = Instances.read(INSTANCE_DIR, Instance.class);
             if (instance != null) {
                 return;
             }

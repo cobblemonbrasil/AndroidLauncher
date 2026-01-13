@@ -26,7 +26,7 @@ import androidx.fragment.app.FragmentManager;
 
 import com.kdt.mcgui.ProgressLayout;
 
-import net.kdt.pojavlaunch.authenticator.accounts.PojavProfile;
+import net.kdt.pojavlaunch.authenticator.accounts.Accounts;
 import net.kdt.pojavlaunch.extra.ExtraConstants;
 import net.kdt.pojavlaunch.extra.ExtraCore;
 import net.kdt.pojavlaunch.extra.ExtraListener;
@@ -35,7 +35,7 @@ import net.kdt.pojavlaunch.fragments.MicrosoftLoginFragment;
 import net.kdt.pojavlaunch.fragments.SelectAuthFragment;
 import net.kdt.pojavlaunch.instances.Instance;
 import net.kdt.pojavlaunch.instances.InstanceInstaller;
-import net.kdt.pojavlaunch.instances.InstanceManager;
+import net.kdt.pojavlaunch.instances.Instances;
 import net.kdt.pojavlaunch.lifecycle.ContextAwareDoneListener;
 import net.kdt.pojavlaunch.lifecycle.ContextExecutor;
 import net.kdt.pojavlaunch.modloaders.modpacks.CustomModpack;
@@ -82,8 +82,9 @@ public class LauncherActivity extends BaseActivity {
     /* Listener for the auth method selection screen */
     private final ExtraListener<Boolean> mSelectAuthMethod = (key, value) -> {
         // The "false" value is used to stop auth method selection
-        if (!value) return false;
-        Fragment fragment = getSupportFragmentManager().findFragmentById(mFragmentView.getId());
+        FragmentManager manager = getSupportFragmentManager();
+        if(!value || manager.isStateSaved()) return false;
+        Fragment fragment = manager.findFragmentById(mFragmentView.getId());
         // Allow starting the add account only from the main menu, should it be moved to fragment itself ?
         if (!(fragment instanceof MainMenuFragment)) return false;
 
@@ -93,8 +94,10 @@ public class LauncherActivity extends BaseActivity {
 
     /* Listener for the settings fragment */
     private final View.OnClickListener mSettingButtonListener = v -> {
-        Fragment fragment = getSupportFragmentManager().findFragmentById(mFragmentView.getId());
-        if (fragment instanceof MainMenuFragment) {
+        FragmentManager manager = getSupportFragmentManager();
+        if(manager.isStateSaved()) return;
+        Fragment fragment = manager.findFragmentById(mFragmentView.getId());
+        if(fragment instanceof MainMenuFragment){
             Tools.swapFragment(this, LauncherPreferenceFragment.class, SETTING_FRAGMENT_TAG, null);
         } else {
             // The setting button doubles as a home button now
@@ -108,7 +111,6 @@ public class LauncherActivity extends BaseActivity {
             return false;
         }
 
-        final Activity activity = this;
         final Context ctx = this;
         ProgressLayout.setProgress(ProgressLayout.FETCH_MODPACK_DATA, 0, "Fetching modpack data");
         PojavApplication.sExecutorService.execute(() -> {
@@ -121,7 +123,12 @@ public class LauncherActivity extends BaseActivity {
                 ProgressLayout.clearProgress(ProgressLayout.FETCH_MODPACK_DATA);
             }
 
-            Instance selectedInstance = InstanceManager.getSelectedListedInstance();
+            Instance selectedInstance = Instances.loadSelectedInstance();
+
+            if(selectedInstance == null) {
+                Tools.runOnUiThread(() -> Toast.makeText(this, R.string.no_instance, Toast.LENGTH_LONG).show());
+                return;
+            }
             Runnable runAfter = () -> Tools.runOnUiThread(() -> {
                 if (selectedInstance.installer != null) {
                     selectedInstance.installer.start();
@@ -133,15 +140,15 @@ public class LauncherActivity extends BaseActivity {
                     return;
                 }
 
-                if (PojavProfile.getCurrentProfileContent(true) == null) {
-                    Toast.makeText(ctx, R.string.no_saved_accounts, Toast.LENGTH_LONG).show();
+                if(Accounts.getCurrent() == null){
+                    Tools.runOnUiThread(() -> Toast.makeText(this, R.string.no_saved_accounts, Toast.LENGTH_LONG).show());
                     ExtraCore.setValue(ExtraConstants.SELECT_AUTH_METHOD, true);
                     return;
                 }
                 String normalizedVersionId = AsyncMinecraftDownloader.normalizeVersionId(selectedInstance.versionId);
                 JMinecraftVersionList.Version mcVersion = AsyncMinecraftDownloader.getListedVersion(normalizedVersionId);
                 new MinecraftDownloader().start(
-                        activity,
+                        this.getAssets(),
                         mcVersion,
                         normalizedVersionId,
                         new ContextAwareDoneListener(ctx, normalizedVersionId)
@@ -198,17 +205,6 @@ public class LauncherActivity extends BaseActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_pojav_launcher);
-        FragmentManager fragmentManager = getSupportFragmentManager();
-        // If we don't have a back stack root yet...
-        if (fragmentManager.getBackStackEntryCount() < 1) {
-            // Manually add the first fragment to the backstack to get easily back to it
-            // There must be a better way to handle the root though...
-            // (artDev: No, there is not. I've spent days researching this for another unrelated project.)
-            fragmentManager.beginTransaction()
-                    .setReorderingAllowed(true)
-                    .addToBackStack("ROOT")
-                    .add(R.id.container_fragment, MainMenuFragment.class, null, "ROOT").commit();
-        }
 
         IconCacheJanitor.runJanitor();
         mRequestNotificationPermissionLauncher = registerForActivityResult(
@@ -288,11 +284,6 @@ public class LauncherActivity extends BaseActivity {
                 fragment.goBack();
                 return;
             }
-        }
-
-        // Check if we are at the root then
-        if (getVisibleFragment("ROOT") != null) {
-            finish();
         }
 
         super.onBackPressed();
