@@ -9,7 +9,7 @@ apply from: rootProject.file('gradle/prefab_bypass.gradle')
 
 import de.undercouch.gradle.tasks.download.Download
 
-def getVersionCode() {
+def vCode() {
     def versionGeneration = 1
 
     def split = rootProject.property("app.version").toString().split("\\.")
@@ -20,11 +20,11 @@ def getVersionCode() {
     return (versionGeneration * 100000000) + (major * 1000000) + (minor * 1000) + patch
 }
 
-def getVersionName() {
+def vName() {
     return "${rootProject.property("app.version").toString()} (${versioning.info.build})"
 }
 
-println("Build Version: ${getVersionName()} (Code: ${getVersionCode()})")
+println("Build Version: ${vName()} (Code: ${vCode()})")
 
 def localProperties = new Properties()
 localProperties.load(new FileInputStream(rootProject.file("local.properties")))
@@ -64,8 +64,8 @@ android {
         applicationId "br.com.cobblemonbrasil.androidlauncher"
         minSdkVersion 21
         targetSdkVersion 35
-        versionCode getVersionCode()
-        versionName getVersionName()
+        versionCode vCode()
+        versionName vName()
         multiDexEnabled true //important
     }
 
