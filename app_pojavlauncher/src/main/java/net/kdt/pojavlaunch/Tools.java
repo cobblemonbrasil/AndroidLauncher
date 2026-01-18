@@ -183,7 +183,7 @@ public final class Tools {
         ASSETS_PATH = DIR_GAME_NEW + "/assets";
         OBSOLETE_RESOURCES_PATH = DIR_GAME_NEW + "/resources";
         CTRLMAP_PATH = DIR_GAME_HOME + "/controlmap";
-        CTRLDEF_FILE = DIR_GAME_HOME + "/controlmap/enJOYpad-1.2.mindentifiquei.json";
+        CTRLDEF_FILE = DIR_GAME_HOME + "/controlmap/enJOYpad-2.0.mindentifiquei.json";
     }
 
     public static void buildNotificationChannel(Context context){
